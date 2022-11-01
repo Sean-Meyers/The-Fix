@@ -7,13 +7,96 @@ TheFix
 	"ifid": "81C48C9B-B4D1-4C86-BEB4-47339B1C6F4E",
 	"format": "SugarCube",
 	"format-version": "2.36.1",
-	"start": "Untitled Passage",
+	"start": "Beginning Passage",
 	"zoom": 1
 }
 
 
-:: Untitled Passage {"position":"800,350","size":"100,100"}
-The fix asybufaisfyufybuiasgvhjwseryhulefgadybuladfgybuilgybuilasd
-Happy Birthday
+:: Beginning Passage {"position":"1802.6666666666667,699.3333333333334","size":"100,100"}
+The first thing you notice is that it’s cold—the type that sinks into your bones and replaces any lingering warmth that you might’ve retained from the tattered cloak that covers you. Next is the roughness of the concrete on the side of your face and on your hands as you hoist yourself up. 
+
+Dawn has just blinked away the remnants of sleep. If the rumbling of your stomach has anything to say about it, you can guess that you’ve been asleep for quite some time.
+
+You look around only to see that you are at the dead end of an empty and dimly lit alleyway. Dirt, dust, and trash surround you. All things considered, it’s fairly clean. You pull yourself up, slowly and clumsily making your way out of the alley, shaking away the fatigue.
+
+As you stumble towards its end, you arrive near a low building. You can just read a sign that obnoxiously displays “Stackler’s Steakhouse”. It is one of the most popular places in town. From where you are, the sweet aroma of freshly baked bread, and the sizzling of a well-seasoned steak being placed in a hot pan causes your stomach to rumble fiercely. The smells are mouthwatering.
+
+You can’t help but notice as a woman walks into the building. She is dressed well: pearls, elbow length gloves, and a simple black dress. She walks in without interference. There doesn’t seem to be a check-in system. Your stomach growls once more.
+
+Your gaze falls towards the back of the building. Just beyond a dumpster are two figures cloaked in darkness. They begin to walk away quickly as you continue to approach the area. One of them hands the other a vile; your attention, however, focuses on the dumpster.
+
+You could dig through it for some food. It would be a terrible experience, but surely you could find something to eat… right?
+[[Go to the Dumpster.|Dumpster Visit I]]
+
+But you could also go into the building and ask for a loaf of bread—or something, anything… surely they’d help.
+[[Go to Stackler's.|Restaurant]]
+
+
+:: Restaurant {"position":"1877.6666666666667,849.3333333333334","size":"100,100"}
+You go inside the building! Gingerly, you approach the entrance. Opening the door leaves you standing there in the midst of finery. Warm air embraces you and the smells from outside are a thousand times stronger. You walk in further—no one bothers you. Further once more—no one. You are now almost at a table already set with food. A nice warm meal awaits you. You walk closer and—
+
+“—Excuse me sir, I’m sorry but you are not allowed in here.” An accented voice interrupts you. The host—a large, aged man—who had just rounded the corner after seating the previous customer (a familiar lady wearing pearls) walks up to you and starts pushing you out the door. Instantly, you are back in the cold.
+
+You have been here before, kicked out in the cold—so many times that you are neither indignant nor defeated (some would mistake the look on your face for defiance).
+
+As you hobble away from the building, a couple also wearing fine clothes, walks right past you. Another customer for the host to welcome...
+
+You could go back in, steal some food, and be out before the host notices you there. 
+[[Return Inside.|Return to Restaurant]]
+
+You could continue to walk away and scavenge in that dumpster you saw earlier.
+[[Return to the Dumpster|Dumpster Visit II]]
+
+
+:: Dumpster Visit II {"position":"2009.6666666666667,1147.3333333333335","size":"100,100"}
+Well, it’s probably not worth it to go back in anyways. You look away from the building; instead, you make your way back to the dumpster you saw earlier. Your stomach growls once more. It wouldn’t hurt to look…
+
+You rummage through the dumpster, and in doing so, you don’t hear the backdoor of the building open. Neither do you see the large figure of the host taking out the garbage. He spots you and yells:
+
+“HEY—what’re you… wait, you’re that rat that snuck into our fine establishment earlier. I told you to shoo! Get away, you!!”
+
+The man runs towards you with the trash bag braced in his hands.
+
+“Get—smACK!—away—sMACK!!—from—SMACK!!!—here!”
+
+You manage to flee, and while doing so, you rub your left chin and grimace—that’s bound to bruise.
+
+
+:: Dumpster Visit I {"position":"1587.6666666666667,1149.3333333333335","size":"100,100"}
+You dig through the dumpster! The bitter smell of garbage now clings to you, but you managed to find some leftovers good enough to eat.
+
+
+:: Return to Restaurant {"position":"1801.6666666666667,999.3333333333334","size":"100,100"}
+You wait about half a minute before following after the couple. The host is gone from his usual station. Your gaze falls back to the warm meal on the table. The steak is practically off the frying pan, sizzling and steaming hot. There are guests all around, though, and there is no way that you wouldn’t be seen. You glance back at the door behind you.
+
+[[Steal the steak and RUN!|Steal]]
+
+[[Sneak towards the kitchen for scraps.|Stealth]]
+
+
+:: Steal {"position":"1726.6666666666667,1149.3333333333335","size":"100,100"}
+Regardless of the watchful eyes, you grab the steak and run! No one makes a move to stop you. They just go back to enjoying their own meals.
+
+
+:: Stealth {"position":"1876.6666666666667,1149.3333333333335","size":"100,100"}
+With the eyes of wealthy patrons following your back, you sneak further in. The clashing and clinking of silverware hints that you’re sneaking in the right direction. You come to a door half ajar. As you peer into what you presume is the kitchen, you make eye contact with the host in the middle of reaching towards a garbage bag. He freezes, and his face reminds you of a tomato as he recognizes you. 
+
+“You! What are you doing here?? Out! OUT I SAY!”  He yells as he grabs a silver platter. The man then runs at you, and you have barely a second before—
+
+—SMACK!
+
+Three strikes of the platter hit your shoulder, side, and lower chin. You are thrown out the back door before you know it, right into the very dumpster you were staring at before. You rub at your chin… that is sure to bruise, colourfully. You gingerly climb out of the dumpster, still hungry and now smelling of garbage. Fantastic.
+
+
+:: Good Ending {"position":"1599.6666666666667,1501.5","size":"100,100"}
+Double-click this passage to edit it.
+
+
+:: Bad Ending {"position":"1800.6666666666667,1495.5","size":"100,100"}
+Double-click this passage to edit it.
+
+
+:: Death {"position":"1998.6666666666667,1497.5","size":"100,100"}
+Double-click this passage to edit it.
 
 
