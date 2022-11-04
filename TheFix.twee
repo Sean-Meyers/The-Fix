@@ -12,7 +12,139 @@ TheFix
 }
 
 
-:: Beginning Passage {"position":"1802,699","size":"100,100"}
+:: Story JavaScript [script]
+Macro.add('JumpLocation',
+{
+  handler: function ()
+  {
+  	try
+  	{
+		let self = this;
+    	if (this.args[1] === true)
+        {
+			$(document).one(":passagestart", function (ev)
+			{              
+				// Start a new day
+				variables().day += 1;
+				variables().time = 7.0;
+				variables().hunger += 1;
+				variables().stink += 1;
+              
+				if (variables().day > 2)
+				{
+            		if (variables().money > 5)
+            		{
+						$.wiki('<<goto "Good Ending">>');
+            		}
+            		else
+            		{
+						$.wiki('<<goto "Bad Ending">>');
+            		}
+          		}
+				else if (variables().hunger >= 5)
+            	{
+					$(ev.content).wiki("You haven't eaten in 5 days. If you keep this up you might die.\n");
+					variables().health -= variables().hunger;
+					healthCheck(ev.content);
+            	}
+              
+				wikiStats(ev.content);
+			});	
+        }
+		else
+        {
+			$(document).one(":passagestart", function (ev)
+			{
+				console.log(self.args);
+				variables().time += ((self.args[2])  ?  self.args[2]  :  1);
+				wikiStats(ev.content);
+				if (variables().time > 10)	//currently set to 10am for testing purposes.
+                {
+					$.wiki('<<goto "Fall Asleep">>');
+                }
+            });
+        }
+      	
+		$.wiki("<<goto " + '"' + this.args[0] + '">>');
+    }
+    catch(e)
+    {
+    	return this.error(e.message);
+    }
+  }
+});
+
+
+Macro.add("CheckHealth",
+{
+	handler: function ()
+	{
+		try
+        {
+			healthCheck(this.output);
+        }
+		catch(e)
+    	{
+    		return this.error(e.message);
+    	}
+    }
+});
+
+
+function wikiStats(output)
+{
+	$(output).wiki("\nJanuary " + variables().day + ",	" + formatTime(variables().time) + "\n\n");
+	$(output).wiki("Money: " + variables().money + "\n");
+	$(output).wiki("Health: " + variables().health + "\n");
+	$(output).wiki("Hunger: " + variables().hunger + "\n");
+	$(output).wiki("Stink: " + variables().stink + "\n");
+	$(output).wiki("Stress: " + variables().stress + "\n\n");
+}
+
+
+function healthCheck(output)
+{
+	if (variables().health <= 0)
+    {
+		$.wiki('<<goto "Death">>');
+    }
+	else if (variables().health <= 10)
+    {
+		$(output).wiki("You're dying. Seek help immediately.\n");
+    }
+	else if (variables().health <= 30)
+    {
+		$(output).wiki("You're seriously injured. Maybe you can somehow manage to avoid paying the hospital bill if you play your cards right.\n");
+    }
+	else if (variables().health <= 65)
+    {
+		$(output).wiki("You're in serious pain. It hurts a lot but you have no choice but to deal with it.\n");
+    }
+}
+
+
+function formatTime(time)
+{
+	let hour = Math.floor(time);
+  	let minute = (60 * (time - hour)).toPrecision((60 * (time - hour) < 10)  ?  1  :  2);
+	if (minute < 10)
+    {
+		minute = "0" + minute;
+    }
+	return "" + hour + ":" + minute;
+}
+
+
+:: Beginning Passage {"position":"1800,700","size":"100,100"}
+<<audio bgm loop volume 0.5 play>>
+<<set $day to 1>>
+<<set $money to 0>>
+<<set $health to 100>>
+<<set $stress to 25>>
+<<set $hunger to 4>>
+<<set $stink to 7>>
+<<set $time to 7.0>>
+
 The first thing you notice is that it’s cold—the type that sinks into your bones and replaces any lingering warmth that you might’ve retained from the tattered cloak that covers you. Next is the roughness of the concrete on the side of your face and on your hands as you hoist yourself up. 
 
 Dawn has just blinked away the remnants of sleep. If the rumbling of your stomach has anything to say about it, you can guess that you’ve been asleep for quite some time.
@@ -51,6 +183,8 @@ You could continue to walk away and scavenge in that dumpster you saw earlier.
 :: Dumpster Visit II {"position":"2009,1147","size":"100,100"}
 Well, it’s probably not worth it to go back in anyways. You look away from the building; instead, you make your way back to the dumpster you saw earlier. Your stomach growls once more. It wouldn’t hurt to look…
 
+<<set $stink += 21>>
+
 You rummage through the dumpster, and in doing so, you don’t hear the backdoor of the building open. Neither do you see the large figure of the host taking out the garbage. He spots you and yells:
 
 “HEY—what’re you… wait, you’re that rat that snuck into our fine establishment earlier. I told you to shoo! Get away, you!!”
@@ -60,6 +194,9 @@ The man runs towards you with the trash bag braced in his hands.
 “Get—smACK!—away—sMACK!!—from—SMACK!!!—here!”
 
 You manage to flee, and while doing so, you rub your left chin and grimace — that’s bound to bruise.
+
+<<set $health -= 10>>
+<<CheckHealth>>				/*TODO: Although it probably doesn't matter for this story event, in the future, we need to make sure that the dialogue that pops up from the health check interacts with the story/random event the way we want it to.*/
 
 Sighing, you come to a stop, warily looking around. It seems that the host didn't follow you - much to your relief. Something catches your eye, however. Hanging patiently on the wall of an opposing building is a poster. You read: 
 
@@ -77,11 +214,14 @@ Interesting… a job could be very beneficial to you if you were to land it. Per
 [[>> It's not worth my time.|No Job]]
 
 
-:: Dumpster Visit I {"position":"1587,1149","size":"100,100"}
+:: Dumpster Visit I {"position":"1575,1150","size":"100,100"}
+<<set $stink += 21>>
+
 You dig through the dumpster! The bitter smell of garbage now clings to you, but you managed to find some leftovers good enough to eat.
 
 As you back away from the dumpster, a poster on the wall of the building catches your attention:
 
+<<set $hunger to 0>>
 
 HELP WANTED: LABOUR INTENSIVE JOB
 
@@ -104,9 +244,12 @@ You wait about half a minute before following after the couple. The host is gone
 [[Sneak towards the kitchen for scraps.|Stealth]]
 
 
-:: Steal {"position":"1726,1149","size":"100,100"}
+:: Steal {"position":"1725,1150","size":"100,100"}
 Regardless of the watchful eyes, you grab the steak and run! No one makes a move to stop you. They just go back to enjoying their own meals.
 
+<<set $hunger = 0>>
+
+/*TODO: Add plate to inventory, once inventory gets implemented*/
 Your hunger is now satiated; the steak practically melted in your mouth - you even got the plate! Something catches your attention from the corner of your eye. A poster near the back of the building hangs patiently. You read: 
 
 
@@ -123,7 +266,7 @@ Interesting… a job could be very beneficial to you if you were to land it. Per
 [[>> It's not worth my time.|No Job]]
 
 
-:: Stealth {"position":"1876,1149","size":"100,100"}
+:: Stealth {"position":"1875,1150","size":"100,100"}
 With the eyes of wealthy patrons following your back, you sneak further in. The clashing and clinking of silverware hints that you’re sneaking in the right direction. You come to a door half ajar. As you peer into what you presume is the kitchen, you make eye contact with the host in the middle of reaching towards a garbage bag. He freezes, and his face reminds you of a tomato as he recognizes you. 
 
 “You! What are you doing here?? Out! OUT I SAY!”  He yells as he grabs a silver platter. The man then runs at you, and you have barely a second before—
@@ -131,6 +274,9 @@ With the eyes of wealthy patrons following your back, you sneak further in. The 
 —SMACK!
 
 Three strikes of the platter hit your shoulder, side, and lower chin. You are thrown out the back door before you know it, right into the very dumpster you were staring at before. You rub at your chin… that is sure to bruise, colourfully. You gingerly climb out of the dumpster, still hungry and now smelling of garbage. Fantastic.
+
+<<set $health -= 20>>
+<<set $stink += 14>>
 
 Rubbing your chin, you look around warily. Something catches your eye. Hanging patiently, on the very building you were kicked out of, is a poster. You read:
 
@@ -146,23 +292,157 @@ Interesting… a job could be very beneficial to you if you were to land it. Per
 [[>> It's not worth my time.|No Job]]
 
 
-:: Good Ending {"position":"1601,1698","size":"100,100"}
-Double-click this passage to edit it.
+:: Good Ending {"position":"1525,1875","size":"100,100"}
+Congratulations, due to your painstaking efforts you somehow managed to save up enough to feed, cloth, clean, and shelter yourself while looking for a stable job. Now that you are not so stinky and unreliable looking, employers are less reluctant to dismiss you so easily. You are finally free from a life of poor hygiene, but otherwise, the rising cost of living has made the differences appear to be aesthetic at best.
+
+/*Congratulations, you managed to overcome your addiction! You are finally free from the world of fantasy that kept you sane and now you have the opportunity to experience the joys of being unhoused in a modern city instead of a medieval one. Unfortunately, the differences appear to be aesthetic at best.*/
+
+Fin.
 
 
-:: Bad Ending {"position":"1800,1701","size":"100,100"}
-Double-click this passage to edit it.
+:: Bad Ending {"position":"1775,1950","size":"100,100"}
+You may not have the most fufilling or lavish lifestyle but...
+
+...
+
+...
+
+...
+
+Who am I kinding your life sucks, and the cycle never ends. One of these days, you will find yourself dead in an alley or park somewhere, but society will move on just fine without you, just like it has for so many before you. Oof.
 
 
-:: Death {"position":"2001,1698","size":"100,100"}
+Fin.
+
+
+:: Death {"position":"2025,1850","size":"100,100"}
 Oh dear, you have died before the age of 51, you have been unable to survive for the average lifespan of an unhoused person in the United States
 
-
-:: No Job {"position":"1597,1399","size":"100,100"}
-Double-click this passage to edit it.
+Fin.
 
 
-:: Job {"position":"2001,1401","size":"100,100"}
-Double-click this passage to edit it.
+:: No Job {"position":"1600,1400","size":"100,100"}
+/* Wrote some stuff for testing purposes, feel free to change.*/
+
+Did you think you would get a job smelling and looking like that? Tough luck.
+
+<<if $hunger > 0>>
+	You feel your stomach burning as you scavenge the streets for something to eat. Unfortunately, there's nothing around, and generosity seems to be absent from the hearts of the people today. Your vision starts to blur. You know this feeling. You've experienced it many times before. Better head back to your shelter before you pass out.
+<<else>>
+	Well, at least you managed to find something to eat. For now...
+    
+    Thinking that you may not be so lucky tomorrow, you spend the rest of the rest of the day looking for more food to bring home. Unfortunately, you did not find anything, and it is already getting late. This area is not the safest at night.
+    
+    Better head back to your shelter before something unfortunate happens.
+<</if>>
+
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
+
+
+:: Job {"position":"2000,1400","size":"100,100"}
+It seems the employers must have been quite desperate this time, since even you got hired.
+
+Well, it was only a temporary one day deal, but still, you have some money in your pocket now.
+
+Hey, maybe you won't even need to steal your food tomorrow!
+
+The posting was not making an understatement when it said "LABOUR INTENSIVE" though. The job lasted all day, leaving you exhausted and hungry again. But still, you cannot help but feel excited. Things are looking up.
+
+<<set $hunger += 1>>
+<<set $stink += 1>>
+<<set $money += 120>>
+
+(It's late, better head home)
+
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
+
+
+:: Notes {"position":"1175,1400","size":"100,100"}
+/* Notes:
+
+Feel free to write random messages here, all this is commented out so players won't see anything.
+
+Remnants of some code macro whatever stuff , I'm leaving it here because it lists some locations we could/should add later:
+
+<<switch $location>>
+	<<case "Home">>
+    	It's nothing much but there's no place like it.
+        
+        In front of you lies your humble tent, hidden in the bushes of the park. Rags, bags and other paraphernalia lie strewn about, and the overall feel is quite dirty.
+        
+        <<JumpLocation "hello" "world">>
+        
+	<<case "Market">>
+    <<case "Hospital">>
+    <<case "Temp Agency">>
+    <<case "Restaurant">>
+    <<case "Downtown">>
+    <<case "Casino">>
+    <<case "Sketchy Alley">>
+    <<case "Public Bath">>
+<</switch>>
+*/
+
+
+:: Home {"position":"1625,1575","size":"100,100"}
+Home Shelter
+
+It's nothing much but there's no place like it.
+        
+In front of you lies your humble tent, hidden in the bushes of the park. Rags, bags and other paraphernalia lie strewn about, and the overall feel is quite dirty.
+
+<<link "Public bath">><<JumpLocation "Public Bath" false 0.25>><</link>>
+<<link "Temp agency">><<JumpLocation "Temp Agency" false 1>><</link>>
+
+
+:: Public Bath {"position":"1750,1575","size":"100,100"}
+/*I'm getting really tired, so this is gonna be a bit uncreative. feel free to change, this is just for demonstrative purposes anyways.*/
+
+Public Bath.
+
+"It's world hygiene day! For today only, we're offering free bath house usage for everyone!"
+
+<<linkreplace "Take a bath">>
+	<<set $stink to 0>>
+    <<set $time += 0.10>>
+	You are all clean!    
+<</linkreplace>>
+
+<<link "Home.">><<JumpLocation "Home" false 0.25>><</link>>
+
+
+:: Temp Agency {"position":"1875,1575","size":"100,100"}
+/*I'm getting really tired, so this is gonna be a bit uncreative. feel free to change, this is just for demonstrative purposes anyways.*/
+
+Temp Agency.
+
+A place to find work.
+
+<<if $stink <= 7>>
+	<<if $time <= 9>>
+		"Congratulations! You're our millionth prospective employee! Have $10"
+    	<<set $money += 10>>
+		<<link "Thanks!">><<JumpLocation "Home" true>><</link>>
+	<<else>>
+    	"We're sorry, job openings close at 9 am, please try again tomorrow."
+        <<link "Okay.... (go home)">><<JumpLocation "Home" false 1>><</link>>
+	<</if>>
+<<else>>
+	"Gag. The smell..." *faints*
+	<<link "Home.">><<JumpLocation "Home" false 1>><</link>>
+<</if>>
+
+
+:: Fall Asleep {"position":"2000,1575","size":"100,100"}
+You find yourself involuntarily falling asleep due to how late it is.
+
+<<link "Yawn...">><<JumpLocation "Home" true>><</link>>
+
+
+:: StoryInit {"position":"2200,725","size":"100,100"}
+/* -- Audio stuff -- */
+<<cacheaudio "bgm" "audio/temp_bgm.wav">>
+<<cacheaudio "hover" "audio/hover.wav">>  
+<<cacheaudio "confirm" "audio/confirm.wav">>
 
 
