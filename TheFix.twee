@@ -182,6 +182,8 @@ You could continue to walk away and scavenge in that dumpster you saw earlier.
 :: Dumpster Visit II {"position":"2009,1147","size":"100,100"}
 Well, it’s probably not worth it to go back in anyways. You look away from the building; instead, you make your way back to the dumpster you saw earlier. Your stomach growls once more. It wouldn’t hurt to look…
 
+<<set $stink += 21>>
+
 You rummage through the dumpster, and in doing so, you don’t hear the backdoor of the building open. Neither do you see the large figure of the host taking out the garbage. He spots you and yells:
 
 “HEY—what’re you… wait, you’re that rat that snuck into our fine establishment earlier. I told you to shoo! Get away, you!!”
@@ -191,6 +193,9 @@ The man runs towards you with the trash bag braced in his hands.
 “Get—smACK!—away—sMACK!!—from—SMACK!!!—here!”
 
 You manage to flee, and while doing so, you rub your left chin and grimace — that’s bound to bruise.
+
+<<set $health -= 10>>
+<<CheckHealth>>				/*TODO: Although it probably doesn't matter for this story event, in the future, we need to make sure that the dialogue that pops up from the health check interacts with the story/random event the way we want it to.*/
 
 Sighing, you come to a stop, warily looking around. It seems that the host didn't follow you - much to your relief. Something catches your eye, however. Hanging patiently on the wall of an opposing building is a poster. You read: 
 
@@ -215,6 +220,7 @@ You dig through the dumpster! The bitter smell of garbage now clings to you, but
 
 As you back away from the dumpster, a poster on the wall of the building catches your attention:
 
+<<set $hunger to 0>>
 
 HELP WANTED: LABOUR INTENSIVE JOB
 
@@ -240,6 +246,9 @@ You wait about half a minute before following after the couple. The host is gone
 :: Steal {"position":"1725,1150","size":"100,100"}
 Regardless of the watchful eyes, you grab the steak and run! No one makes a move to stop you. They just go back to enjoying their own meals.
 
+<<set $hunger = 0>>
+
+/*TODO: Add plate to inventory, once inventory gets implemented*/
 Your hunger is now satiated; the steak practically melted in your mouth - you even got the plate! Something catches your attention from the corner of your eye. A poster near the back of the building hangs patiently. You read: 
 
 
@@ -256,7 +265,7 @@ Interesting… a job could be very beneficial to you if you were to land it. Per
 [[>> It's not worth my time.|No Job]]
 
 
-:: Stealth {"position":"1876,1149","size":"100,100"}
+:: Stealth {"position":"1875,1150","size":"100,100"}
 With the eyes of wealthy patrons following your back, you sneak further in. The clashing and clinking of silverware hints that you’re sneaking in the right direction. You come to a door half ajar. As you peer into what you presume is the kitchen, you make eye contact with the host in the middle of reaching towards a garbage bag. He freezes, and his face reminds you of a tomato as he recognizes you. 
 
 “You! What are you doing here?? Out! OUT I SAY!”  He yells as he grabs a silver platter. The man then runs at you, and you have barely a second before—
@@ -264,6 +273,9 @@ With the eyes of wealthy patrons following your back, you sneak further in. The 
 —SMACK!
 
 Three strikes of the platter hit your shoulder, side, and lower chin. You are thrown out the back door before you know it, right into the very dumpster you were staring at before. You rub at your chin… that is sure to bruise, colourfully. You gingerly climb out of the dumpster, still hungry and now smelling of garbage. Fantastic.
+
+<<set $health -= 20>>
+<<set $stink += 14>>
 
 Rubbing your chin, you look around warily. Something catches your eye. Hanging patiently, on the very building you were kicked out of, is a poster. You read:
 
@@ -280,15 +292,32 @@ Interesting… a job could be very beneficial to you if you were to land it. Per
 
 
 :: Good Ending {"position":"1525,1875","size":"100,100"}
-Good Ending
+Congratulations, due to your painstaking efforts you somehow managed to save up enough to feed, cloth, clean, and shelter yourself while looking for a stable job. Now that you are not so stinky and unreliable looking, employers are less reluctant to dismiss you so easily. You are finally free from a life of poor hygiene, otherwise, the rising cost of living has made the differences appear to be aesthetic at best.
+
+/*Congratulations, you managed to overcome your addiction! You are finally free from the world of fantasy that kept you sane and now you have the opportunity to experience the joys of being unhoused in a modern city instead of a medieval one. Unfortunately, the differences appear to be aesthetic at best.*/
+
+Fin.
 
 
 :: Bad Ending {"position":"1775,1950","size":"100,100"}
-Bad Ending
+You may not have the most fufilling or lavish lifestyle but...
+
+...
+
+...
+
+...
+
+Who am I kinding your life sucks, and the cycle never ends. One of these days, you will find yourself dead in an alley or park somewhere, but society will move on just fine without you, just like it has for so many before you.
+
+
+Fin.
 
 
 :: Death {"position":"2025,1850","size":"100,100"}
 Oh dear, you have died before the age of 51, you have been unable to survive for the average lifespan of an unhoused person in the United States
+
+Fin.
 
 
 :: No Job {"position":"1600,1400","size":"100,100"}
@@ -296,13 +325,35 @@ Oh dear, you have died before the age of 51, you have been unable to survive for
 
 Did you think you would get a job smelling and looking like that? Tough luck.
 
-You feel your stomach burning as you scavenge the streets for something to eat. Unfortunately, there's nothing around, and generosity seems to be absent from the hearts of the people today. Your vision starts to blur. You know this feeling. You've experienced it many times before. Better head back to your shelter before you pass out.
+<<if $hunger > 0>>
+	You feel your stomach burning as you scavenge the streets for something to eat. Unfortunately, there's nothing around, and generosity seems to be absent from the hearts of the people today. Your vision starts to blur. You know this feeling. You've experienced it many times before. Better head back to your shelter before you pass out.
+<<else>>
+	Well, at least you managed to find something to eat. For now...
+    
+    Thinking that you may not be so lucky tomorrow, you spend the rest of the rest of the day looking for more food to bring home. Unfortunately, you did not find anything, and it is already getting late. This area is not the safest at night.
+    
+    Better head back to your shelter before something unfortunate happens.
+<</if>>
 
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
 
 
-:: Job {"position":"2001,1401","size":"100,100"}
-Double-click this passage to edit it.
+:: Job {"position":"2000,1400","size":"100,100"}
+It seems the employers must have been quite desperate this time, since even you got hired.
+
+Well, it was only a temporary one day deal, but still, you have some money in your pocket now.
+
+Hey, maybe you won't even need to steal your food tomorrow!
+
+The posting was not making an understatement when it said "LABOUR INTENSIVE" though. The job lasted all day, leaving you exhausted and hungry again. But still, you cannot help but feel excited. Things are looking up.
+
+<<set $hunger += 1>>
+<<set $stink += 1>>
+<<set $money += 120>>
+
+(It's late, better head home)
+
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
 
 
 :: Notes {"position":"1175,1400","size":"100,100"}
@@ -350,7 +401,11 @@ Public Bath.
 
 "It's world hygiene day! For today only, we're offering free bath house usage for everyone!"
 
-<<link "Take a bath">><<set $stink to 0>><<set $time += 0.10>><</link>>
+<<linkreplace "Take a bath">>
+	<<set $stink to 0>>
+    <<set $time += 0.10>>
+	You are all clean!    
+<</linkreplace>>
 
 <<link "Home.">><<JumpLocation "Home" false 0.25>><</link>>
 
