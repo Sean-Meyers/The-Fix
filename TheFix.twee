@@ -136,6 +136,7 @@ function formatTime(time)
 
 
 :: Beginning Passage {"position":"1800,700","size":"100,100"}
+<<audio bgm loop volume 0.5 play>>
 <<set $day to 1>>
 <<set $money to 0>>
 <<set $health to 100>>
@@ -436,5 +437,12 @@ A place to find work.
 You find yourself involuntarily falling asleep due to how late it is.
 
 <<link "Yawn...">><<JumpLocation "Home" true>><</link>>
+
+
+:: StoryInit {"position":"2200,725","size":"100,100"}
+/* -- Audio stuff -- */
+<<cacheaudio "bgm" "audio/temp_bgm.wav">>
+<<cacheaudio "hover" "audio/hover.wav">>  
+<<cacheaudio "confirm" "audio/confirm.wav">>
 
 
