@@ -12,7 +12,9 @@ TheFix
 }
 
 
-:: Beginning Passage {"position":"1802,699","size":"100,100"}
+:: Beginning Passage {"position":"1800,700","size":"100,100"}
+<<audio bgm loop volume 0.5 play>>
+
 The first thing you notice is that it’s cold—the type that sinks into your bones and replaces any lingering warmth that you might’ve retained from the tattered cloak that covers you. Next is the roughness of the concrete on the side of your face and on your hands as you hoist yourself up. 
 
 Dawn has just blinked away the remnants of sleep. If the rumbling of your stomach has anything to say about it, you can guess that you’ve been asleep for quite some time.
@@ -164,5 +166,12 @@ Double-click this passage to edit it.
 
 :: Job {"position":"2001,1401","size":"100,100"}
 Double-click this passage to edit it.
+
+
+:: StoryInit {"position":"2200,725","size":"100,100"}
+/* -- Audio stuff -- */
+<<cacheaudio "bgm" "audio/temp_bgm.wav">>
+<<cacheaudio "hover" "audio/hover.wav">>  
+<<cacheaudio "confirm" "audio/confirm.wav">>
 
 
