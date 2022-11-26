@@ -135,7 +135,7 @@ function formatTime(time)
 }
 
 
-:: Beginning Passage {"position":"1800,700","size":"100,100"}
+:: Beginning Passage {"position":"799,99","size":"100,100"}
 <<audio bgm loop volume 0.5 play>>
 <<set $day to 1>>
 <<set $money to 0>>
@@ -164,7 +164,7 @@ But you could also go into the building and ask for a loaf of bread—or somethi
 [[Go to Stackler's.|Restaurant]]
 
 
-:: Restaurant {"position":"1877,849","size":"100,100"}
+:: Restaurant {"position":"876,248","size":"100,100"}
 You go inside the building! Gingerly, you approach the entrance. Opening the door leaves you standing there in the midst of finery. Warm air embraces you and the smells from outside are a thousand times stronger. You walk in further—no one bothers you. Further once more—no one. You are now almost at a table already set with food. A nice warm meal awaits you. You walk closer and—
 
 “—Excuse me sir, I’m sorry but you are not allowed in here.” An accented voice interrupts you. The host—a large, aged man—who had just rounded the corner after seating the previous customer (a familiar lady wearing pearls) walks up to you and starts pushing you out the door. Instantly, you are back in the cold.
@@ -180,7 +180,7 @@ You could continue to walk away and scavenge in that dumpster you saw earlier.
 [[Return to the Dumpster|Dumpster Visit II]]
 
 
-:: Dumpster Visit II {"position":"2009,1147","size":"100,100"}
+:: Dumpster Visit II {"position":"1008,546","size":"100,100"}
 Well, it’s probably not worth it to go back in anyways. You look away from the building; instead, you make your way back to the dumpster you saw earlier. Your stomach growls once more. It wouldn’t hurt to look…
 
 <<set $stink += 21>>
@@ -214,7 +214,7 @@ Interesting… a job could be very beneficial to you if you were to land it. Per
 [[>> It's not worth my time.|No Job]]
 
 
-:: Dumpster Visit I {"position":"1575,1150","size":"100,100"}
+:: Dumpster Visit I {"position":"574,549","size":"100,100"}
 <<set $stink += 21>>
 
 You dig through the dumpster! The bitter smell of garbage now clings to you, but you managed to find some leftovers good enough to eat.
@@ -236,7 +236,7 @@ Interesting… a job could be very beneficial to you if you were to land it. Per
 [[>> It's not worth my time.|No Job]]
 
 
-:: Return to Restaurant {"position":"1801,999","size":"100,100"}
+:: Return to Restaurant {"position":"800,398","size":"100,100"}
 You wait about half a minute before following after the couple. The host is gone from his usual station. Your gaze falls back to the warm meal on the table. The steak is practically off the frying pan, sizzling and steaming hot. There are guests all around, though, and there is no way that you wouldn’t be seen. You glance back at the door behind you.
 
 [[Steal the steak and RUN!|Steal]]
@@ -244,7 +244,7 @@ You wait about half a minute before following after the couple. The host is gone
 [[Sneak towards the kitchen for scraps.|Stealth]]
 
 
-:: Steal {"position":"1725,1150","size":"100,100"}
+:: Steal {"position":"724,549","size":"100,100"}
 Regardless of the watchful eyes, you grab the steak and run! No one makes a move to stop you. They just go back to enjoying their own meals.
 
 <<set $hunger = 0>>
@@ -266,7 +266,7 @@ Interesting… a job could be very beneficial to you if you were to land it. Per
 [[>> It's not worth my time.|No Job]]
 
 
-:: Stealth {"position":"1875,1150","size":"100,100"}
+:: Stealth {"position":"874,549","size":"100,100"}
 With the eyes of wealthy patrons following your back, you sneak further in. The clashing and clinking of silverware hints that you’re sneaking in the right direction. You come to a door half ajar. As you peer into what you presume is the kitchen, you make eye contact with the host in the middle of reaching towards a garbage bag. He freezes, and his face reminds you of a tomato as he recognizes you. 
 
 “You! What are you doing here?? Out! OUT I SAY!”  He yells as he grabs a silver platter. The man then runs at you, and you have barely a second before—
@@ -321,7 +321,7 @@ Oh dear, you have died before the age of 51, you have been unable to survive for
 Fin.
 
 
-:: No Job {"position":"1600,1400","size":"100,100"}
+:: No Job {"position":"599,799","size":"100,100"}
 /* Wrote some stuff for testing purposes, feel free to change.*/
 
 Did you think you would get a job smelling and looking like that? Tough luck.
@@ -339,7 +339,7 @@ Did you think you would get a job smelling and looking like that? Tough luck.
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
 
 
-:: Job {"position":"2000,1400","size":"100,100"}
+:: Job {"position":"999,799","size":"100,100"}
 It seems the employers must have been quite desperate this time, since even you got hired.
 
 Well, it was only a temporary one day deal, but still, you have some money in your pocket now.
@@ -357,7 +357,7 @@ The posting was not making an understatement when it said "LABOUR INTENSIVE" tho
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
 
 
-:: Notes {"position":"1175,1400","size":"100,100"}
+:: Notes {"position":"174,799","size":"100,100"}
 /* Notes:
 
 Feel free to write random messages here, all this is commented out so players won't see anything.
@@ -384,7 +384,12 @@ Remnants of some code macro whatever stuff , I'm leaving it here because it list
 */
 
 
-:: Home {"position":"1625,1575","size":"100,100"}
+
+
+yo, guys, there are some places in the actual story events (like story event 2 panel) where I was like "programmers, can you do something here?) So please read through them.
+
+
+:: Home {"position":"624,974","size":"100,100"}
 Home Shelter
 
 It's nothing much but there's no place like it.
@@ -395,7 +400,7 @@ In front of you lies your humble tent, hidden in the bushes of the park. Rags, b
 <<link "Temp agency">><<JumpLocation "Temp Agency" false 1>><</link>>
 
 
-:: Public Bath {"position":"1750,1575","size":"100,100"}
+:: Public Bath {"position":"749,974","size":"100,100"}
 /*I'm getting really tired, so this is gonna be a bit uncreative. feel free to change, this is just for demonstrative purposes anyways.*/
 
 Public Bath.
@@ -411,7 +416,7 @@ Public Bath.
 <<link "Home.">><<JumpLocation "Home" false 0.25>><</link>>
 
 
-:: Temp Agency {"position":"1875,1575","size":"100,100"}
+:: Temp Agency {"position":"874,974","size":"100,100"}
 /*I'm getting really tired, so this is gonna be a bit uncreative. feel free to change, this is just for demonstrative purposes anyways.*/
 
 Temp Agency.
@@ -433,16 +438,178 @@ A place to find work.
 <</if>>
 
 
-:: Fall Asleep {"position":"2000,1575","size":"100,100"}
+:: Fall Asleep {"position":"999,974","size":"100,100"}
 You find yourself involuntarily falling asleep due to how late it is.
 
 <<link "Yawn...">><<JumpLocation "Home" true>><</link>>
 
 
-:: StoryInit {"position":"2200,725","size":"100,100"}
+:: StoryInit {"position":"1199,124","size":"100,100"}
 /* -- Audio stuff -- */
 <<cacheaudio "bgm" "audio/temp_bgm.wav">>
 <<cacheaudio "hover" "audio/hover.wav">>  
 <<cacheaudio "confirm" "audio/confirm.wav">>
+
+
+:: Story Event 2 {"position":"1599,99.5","size":"100,100"}
+There’s a bottle in your hand. It’s glass cold against your palm as your stare at the pearlescent, glitter-filled liquid within. Temptation in all its glory.  
+
+There’s a phantom pain in your left knee, pulsing and burrowing into your bones - angrily tearing into the ligament. It isn’t physically real, you should know this, but, right now, it’s everything but fake. Right now, it’s real to you. 
+
+There’s a stray black cat digging through the dustbins beside you. It seems like you both share the same predicament. It stops, as if sensing your musings, and runs off. You sigh as you lay your head against the brick wall you’re resting against. The distraction doesn’t last very long before another aching pain travels out from your knee. Damn your old injury.
+
+[[Take A Drink?]] **Programmers, can a new take a drink button appear everytime they click it?
+
+[[Don't Take A Drink]] **Programmers, can this button not work?
+
+
+:: Take A Drink? {"position":"1601,299.5","size":"100,100"}
+You take a drink. It tastes like melted down peppermint-flavoured cotton candy. 
+
+[[Wait.|Wait1]]
+
+
+:: Don't Take A Drink {"position":"1801,99.5","size":"100,100"}
+Double-click this passage to edit it.
+
+
+:: Wait1 {"position":"1602,495.5","size":"100,100"}
+How long has it been?
+
+[[Wait.|Wait2]]
+
+
+:: Wait2 {"position":"1603,600.5","size":"100,100"}
+You feel nice and comfortable and warm. It’s so relaxing, you could just shut your eyes here…
+
+[[Fight It]]
+
+[[Give In]]
+
+
+:: Fight It {"position":"1498,800.5","size":"100,100"}
+You feel your eyes start to close, and you fight it with all your might. Forcing open your eyes seems to give a little shock to your heart and a headache slowly starts forming behind them. Falling asleep here would do you no good.
+
+[[Get Up]]
+
+[[Give In]]
+
+
+:: Give In {"position":"1698,801.5","size":"100,100"}
+There’s nothing here.
+
+At first.
+
+You can vaguely recall glimpses of a time encased in golden tones. A wistful memory perhaps. Something before the accident - before you were offered promises and lies coated in cotton candy and peppermint.
+
+[[...]]
+
+
+:: Get Up {"position":"1499,997.5","size":"100,100"}
+You struggle to your feet, carefully tucking the Elixir away in one of the inner parts of your cloak. As you stand, you can definitely feel it start to kick in. You feel rejuvenated, fresh, fantastic! Like you could do anything and everything. Better yet, your knee doesn’t hurt anymore. You hop around, feeling a little silly. It doesn’t matter, heck, you feel like you could fly!
+
+You stumble forward, and as you do so, you trip a little bit. Over what, you ask? Nothing that you can see. You even stubbed your toe! Not that you could feel it right now - the pain (you can still feel your toes, don’t worry!)
+
+Oh, look. The cat has returned. It looks at you curiously. To you, its fur looks particularly soft.
+
+You feel pleasantly light as you stagger towards the cat, hands reaching out. Nothing can touch you -  you’re the strongest person alive! Nothing can even try to stop—!!!
+
+THUD
+
+[[Give In]]
+
+
+:: ... {"position":"1700,1100.5","size":"100,100"}
+You come to slumped over, feeling as if ice is coursing through your veins. You can immediately tell that a couple of hours have passed. The taste of peppermint coats your tongue despite being out for about a half hour. Your skin is clammy and cold. You flex your hand - it feels weak and sluggish.
+
+There’s something else, though, something soft laying across our legs. You look up. The eyes of a black cat bores into your own. 
+
+“Excuse my intrusion,” It says.
+
+You blink once. Then twice, before yelping and launching the cat from your lap.
+
+It hisses angrily at you, and scuttles off. Hm, perhaps you imagined that.
+
+***Programmers, start the day with debuffs?
+
+
+:: Story Event 3 {"position":"2099,98.5","size":"100,100"}
+Double-click this passage to edit it.
+
+
+:: Story Event 4 {"position":"2401,99.5","size":"100,100"}
+Double-click this passage to edit it.
+
+
+:: Story Event 5 {"position":"2702,100.5","size":"100,100"}
+Double-click this passage to edit it.
+
+
+:: Story Event 6 {"position":"3002,99.5","size":"100,100"}
+[[Take Elixir]]
+
+[[Leave the Elixir]]
+
+
+:: Take Elixir {"position":"2902,299.5","size":"100,100"}
+The Elixir washes over you as you take it. Cotton candy sprouts from your insides like fungus, and peppermints are the spores they release. They spread throughout your entire body, and you no longer feel any pain. You sit down, relaxed.
+
+[[Wait.|Wait3]]
+
+
+:: Leave the Elixir {"position":"3102,297.5","size":"100,100"}
+You step away from the body resting in the dark alleyway, mentally restraining yourself. You won’t do it. Each step backwards hosts its own individual weight–thousands of tonnes of invisible force pushing against you. You’ll only make it so far. 
+
+Luck would have it, though, that as you walk backwards, slowly stepping into the sunlit streets of the neighbourhood, someone calls out to you. 
+
+“Hey!” The stranger calls out. You whip your head around, distracted for at least a moment. Recognition instantly flashes across your face as an old family friend hobbles over to you. 
+
+“I haven’t seen you in ages! You–” he looks you up and down, “--would you like to catch up over coffee? Something warm perhaps?” He sounds old, worried.
+
+[[You know what? Sure, why not?]]
+
+[[I’ve got something to... uh, do… maybe next time.]]
+
+
+:: Wait3 {"position":"2902,499.5","size":"100,100"}
+You feel much better now. Warm and fuzzy and nice. 
+
+[[Wait.|Wait4]]
+
+
+:: Wait4 {"position":"2902,602.5","size":"100,100"}
+You glance down at the body beside you. You should probably call for some help, but you just feel so comfortable—and it has been a while. You look away, leaning the back of your head against the wall. Taking a moment to yourself. You breathe deeply.
+
+[[Close Your Eyes]]
+
+
+:: Close Your Eyes {"position":"2902,797.5","size":"100,100"}
+You come to a few hours later, having fallen asleep. Your stomach is empty, and you feel cold. You feel goosebumps across your entire body as a shiver runs up your spine. There is still some Elixir left in the bottle. You sigh before stretching your neck and back and looking around. The body beside you is untouched and unmoving; you glance at it briefly before looking away. It winks at you. 
+
+Wait, hold on–
+
+You do a double take.
+
+The corpse on the ground is staring back at you– eyes wide open and pupils dilated. You place the Elixir down beside you to rub at your eyes. Surely they’re not open, right? No, no they’re definitely open. And as the loosened jaw of your recently deceased acquaintance starts to move, you cry out and scramble back to your feet. 
+
+It’s alive?! 
+
+It’s ALIVE!? 
+
+You think you see it start to blink and reach out towards you. Nothing else moves, but that’s enough for you. You dart out of the darkened alleyway–well, not before creeping forward to snatch the Elixir you placed down. You could swear it tried to crawl closer to you when you did.
+
+Anyways, it’s a good thing you got out of there before your (not-so)-zombie friend could turn you too, but it’s also a shame that you couldn’t hear the greeting of a familiar face down the road. Quite unfortunate.
+
+
+:: You know what? Sure, why not? {"position":"3035,607.5","size":"100,100"}
+You spend the rest of the day talking with an old friend. I wish you could see your heavy eyes lighten as he did. The coffee was nice. You two plan to do this more often. For now, though, it’s time for you to head back - it’s getting dark.
+
+
+:: I’ve got something to... uh, do… maybe next time. {"position":"3145,607.5","size":"100,100"}
+The man visibly dims, frowning briefly. “Well, if you ever need me, I’m just off of 123 Purdue Lane. Perhaps we’ll pass each other again.” He hobbles past you, patting your shoulder in farewell. You stand there for a little bit, contemplating. But anyways! It’s about time to do… Well, whatever you were planning to do. Shall we?
+
+
+:: Story Event 7 {"position":"3300,101.5","size":"100,100"}
+not sure how to implement this one bois lots of if statements
 
 
