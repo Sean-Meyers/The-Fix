@@ -30,7 +30,7 @@ Macro.add('JumpLocation',
 				variables().hunger += 1;
 				variables().stink += 1;
               
-				if (variables().day > 2)
+				if (variables().day > 28)
 				{
             		if (variables().money > 5)
             		{
@@ -47,6 +47,30 @@ Macro.add('JumpLocation',
 					variables().health -= variables().hunger;
 					healthCheck(ev.content);
             	}
+
+				switch(variables().day)
+				{
+					case 4:
+						$.wiki('<<goto "Story Event 2">>');
+						break;
+					case 8:
+						$.wiki('<<goto "Story Event 3">>');
+						break;
+					case 12:
+						$.wiki('<<goto "Story Event 4">>');
+						break;
+					case 16:
+						$.wiki('<<goto "Story Event 5">>');
+						break;
+					case 20:
+						$.wiki('<<goto "Story Event 6">>');
+						break;
+					case 24:
+						$.wiki('<<goto "Story Event 7">>');
+						break;
+					default:
+						break;
+				}
               
 				wikiStats(ev.content);
 			});	
@@ -55,10 +79,10 @@ Macro.add('JumpLocation',
         {
 			$(document).one(":passagestart", function (ev)
 			{
-				console.log(self.args);
+				console.log(self.args);	//TODO: erase the debug statement?
 				variables().time += ((self.args[2])  ?  self.args[2]  :  1);
 				wikiStats(ev.content);
-				if (variables().time > 10)	//currently set to 10am for testing purposes.
+				if (variables().time > 24)	//currently set to 12am for testing purposes.
                 {
 					$.wiki('<<goto "Fall Asleep">>');
                 }
@@ -389,25 +413,34 @@ Remnants of some code macro whatever stuff , I'm leaving it here because it list
 yo, guys, there are some places in the actual story events (like story event 2 panel) where I was like "programmers, can you do something here?) So please read through them.
 
 
-:: Home {"position":"624,974","size":"100,100"}
+:: Home {"position":"650,1075","size":"100,100"}
+/*TODO:
+Actions:
+Sleep	(Progress the current day)
+
+TODO: Make Passing out cause the day to start later, money to be lost
+*/
 Home Shelter
 
 It's nothing much but there's no place like it.
         
 In front of you lies your humble tent, hidden in the bushes of the park. Rags, bags and other paraphernalia lie strewn about, and the overall feel is quite dirty.
 
-<<link "Public bath">><<JumpLocation "Public Bath" false 0.25>><</link>>
+<<link "River">><<JumpLocation "River" false 0.25>><</link>>
+<<link "Convenience Store">><<JumpLocation "Convenience Store" false 0.08>><</link>>
 <<link "Temp agency">><<JumpLocation "Temp Agency" false 1>><</link>>
+<<link "Downtown">><<JumpLocation "Downtown" false 0.5>><</link>>
 
 
-:: Public Bath {"position":"749,974","size":"100,100"}
-/*I'm getting really tired, so this is gonna be a bit uncreative. feel free to change, this is just for demonstrative purposes anyways.*/
+:: River {"position":"725,950","size":"100,100"}
+/*TODO
+Actions:
+Wash Up (Uses 1 soap (each bar prolly has 3 usages))	//FIXME
 
-Public Bath.
-
-"It's world hygiene day! For today only, we're offering free bath house usage for everyone!"
-
-<<linkreplace "Take a bath">>
+Random Events:
+Fall in River (1%) -75hp (you nearly drowned) (MAYBE)
+*/
+<<linkreplace "Wash Up">>
 	<<set $stink to 0>>
     <<set $time += 0.10>>
 	You are all clean!    
@@ -416,8 +449,13 @@ Public Bath.
 <<link "Home.">><<JumpLocation "Home" false 0.25>><</link>>
 
 
-:: Temp Agency {"position":"874,974","size":"100,100"}
-/*I'm getting really tired, so this is gonna be a bit uncreative. feel free to change, this is just for demonstrative purposes anyways.*/
+:: Temp Agency {"position":"775,1075","size":"100,100"}
+/*TODO
+Actions:
+Apply For Day Job (50 - 7 * Stink % chance to land a job)	7am - 9am M-F
+
+// FIXME: Change it to how it should be.
+*/
 
 Temp Agency.
 
@@ -437,8 +475,11 @@ A place to find work.
 	<<link "Home.">><<JumpLocation "Home" false 1>><</link>>
 <</if>>
 
+<<link "Home.">><<JumpLocation "Home" false 1>><</link>>
+<<link "Sketchy Alley">><<JumpLocation "Sketchy Alley" false 0.08>><</link>>
 
-:: Fall Asleep {"position":"999,974","size":"100,100"}
+
+:: Fall Asleep {"position":"1100,1000","size":"100,100"}
 You find yourself involuntarily falling asleep due to how late it is.
 
 <<link "Yawn...">><<JumpLocation "Home" true>><</link>>
@@ -451,7 +492,7 @@ You find yourself involuntarily falling asleep due to how late it is.
 <<cacheaudio "confirm" "audio/confirm.wav">>
 
 
-:: Story Event 2 {"position":"1599,99.5","size":"100,100"}
+:: Story Event 2 {"position":"1600,100","size":"100,100"}
 There’s a bottle in your hand. It’s glass cold against your palm as your stare at the pearlescent, glitter-filled liquid within. Temptation in all its glory.  
 
 There’s a phantom pain in your left knee, pulsing and burrowing into your bones - angrily tearing into the ligament. It isn’t physically real, you should know this, but, right now, it’s everything but fake. Right now, it’s real to you. 
@@ -611,5 +652,106 @@ The man visibly dims, frowning briefly. “Well, if you ever need me, I’m just
 
 :: Story Event 7 {"position":"3300,101.5","size":"100,100"}
 not sure how to implement this one bois lots of if statements
+
+
+:: Downtown {"position":"650,1200","size":"100,100"}
+/*TODO
+Actions:
+Panhandle (2h)	10% chance to get $10
+
+Random Events:
+Get pickpocketed (5%)
+*/
+<<link "Sketchy Alley">><<JumpLocation "Sketchy Alley" false 0.08>><</link>>
+<<link "Stackler's Steak House">><<JumpLocation "Stackler's Steak House" false 0.08>><</link>>
+<<link "Police Station">><<JumpLocation "Police Station" false 0.08>><</link>>
+<<link "Farmer's Market">><<JumpLocation "Farmer's Market" false 0.08>><</link>>
+<<link "Hospital">><<JumpLocation "Hospital" false 0.5>><</link>>
+<<link "Casino">><<JumpLocation "Casino" false 0.5>><</link>>
+<<link "Home">><<JumpLocation "Home" false 0.5>><</link>>
+
+
+:: Sketchy Alley {"position":"775,1200","size":"100,100"}
+/*TODO
+Actions:
+Scavange Dumpster (20min, stink+21)		50% Chance to get food
+Talk to dealer	(10min, only on wednesdays)		Sells black market items like Elixer, Pistol, Ammo, Mysterious Looking Meat
+
+Random Events:
+Get mugged (5% + 5% * hours past 6pm)
+*/
+<<link "Stackler's Steak House">><<JumpLocation "Stackler's Steak House" false 0.08>><</link>>
+<<link "Temp Agency">><<JumpLocation "Temp Agency" false 0.08>><</link>>
+<<link "Downtown">><<JumpLocation "Downtown" false 0.08>><</link>>
+
+
+:: Farmer's Market {"position":"525,1200","size":"100,100"}
+/*TODO
+Actions:
+Buy Bundle of Bananas (alternatively: Fresh Fruit) $10, 	Sat 9am - 3pm		(can be eaten 3 times)
+Buy Artsisan Soap Bar $5
+
+Random Events:
+Slip on a banana peel (5%)	-10hp
+*/
+<<link "Downtown">><<JumpLocation "Downtown" false 0.08>><</link>>
+
+
+:: Casino {"position":"525,1325","size":"100,100"}
+/*TODO
+Actions:
+Buy Lotto Ticket $2
+Gamble ($10, $100, or $1000), 1h(?)
+Order Wonton Soup $10, 20min		12pm - 6pm
+
+Random Events:
+Find Money (10% * 1/amount, 0 < amount < $100)
+Find Lotto Ticket (1%)
+*/
+<<link "Downtown">><<JumpLocation "Downtown" false 0.5>><</link>>
+
+
+:: Stackler's Steak House {"position":"775,1325","size":"100,100"}
+/*TODO
+Actions:
+Order Steak $100, 30min		4pm - 10pm every day
+Order Bread $20, 10min
+
+Random Events:
+Kind sould gives you food (10%, 4pm - 10pm)
+Host kicks you out (50% stink > 7, 4 - 10pm) -5hp
+*/
+<<link "Sketchy Alley">><<JumpLocation "Sketchy Alley" false 0.08>><</link>>
+<<link "Downtown">><<JumpLocation "Downtown" false 0.08>><</link>>
+
+
+:: Convenience Store {"position":"600,950","size":"100,100"}
+/*TODO
+Actions:
+Buy Garlic n' Stinky Cheese Wings $10
+Buy Soap bar $8
+Buy Camping knife $50
+Buy Lotto Ticket $5
+
+Random Events:
+Find Lotto Ticket (1%)
+*/
+<<link "Home">><<JumpLocation "Home" false 0.08>><</link>>
+
+
+:: Hospital {"position":"525,1075","size":"100,100"}
+/*TODO
+Actions:
+Get Patched Up (cost: 10 * missing hp), uses whole day, fully heal
+*/
+<<link "Downtown">><<JumpLocation "Downtown" false 0.5>><</link>>
+
+
+:: Police Station {"position":"650,1325","size":"100,100"}
+/*TODO
+Action:
+Report Crime (does nothing) 5min
+*/
+<<link "Downtown">><<JumpLocation "Downtown" false 0.08>><</link>>
 
 
