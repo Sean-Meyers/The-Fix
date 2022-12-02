@@ -12,8 +12,138 @@ TheFix
 }
 
 
-:: Beginning Passage {"position":"1800,700","size":"100,100"}
+:: Story JavaScript [script]
+Macro.add('JumpLocation',
+{
+  handler: function ()
+  {
+  	try
+  	{
+		let self = this;
+    	if (this.args[1] === true)
+        {
+			$(document).one(":passagestart", function (ev)
+			{              
+				// Start a new day
+				variables().day += 1;
+				variables().time = 7.0;
+				variables().hunger += 1;
+				variables().stink += 1;
+              
+				if (variables().day > 2)
+				{
+            		if (variables().money > 5)
+            		{
+						$.wiki('<<goto "Good Ending">>');
+            		}
+            		else
+            		{
+						$.wiki('<<goto "Bad Ending">>');
+            		}
+          		}
+				else if (variables().hunger >= 5)
+            	{
+					$(ev.content).wiki("You haven't eaten in 5 days. If you keep this up you might die.\n");
+					variables().health -= variables().hunger;
+					healthCheck(ev.content);
+            	}
+              
+				wikiStats(ev.content);
+			});	
+        }
+		else
+        {
+			$(document).one(":passagestart", function (ev)
+			{
+				console.log(self.args);
+				variables().time += ((self.args[2])  ?  self.args[2]  :  1);
+				wikiStats(ev.content);
+				if (variables().time > 10)	//currently set to 10am for testing purposes.
+                {
+					$.wiki('<<goto "Fall Asleep">>');
+                }
+            });
+        }
+      	
+		$.wiki("<<goto " + '"' + this.args[0] + '">>');
+    }
+    catch(e)
+    {
+    	return this.error(e.message);
+    }
+  }
+});
+
+
+Macro.add("CheckHealth",
+{
+	handler: function ()
+	{
+		try
+        {
+			healthCheck(this.output);
+        }
+		catch(e)
+    	{
+    		return this.error(e.message);
+    	}
+    }
+});
+
+
+function wikiStats(output)
+{
+	$(output).wiki("\nJanuary " + variables().day + ",	" + formatTime(variables().time) + "\n\n");
+	$(output).wiki("Money: " + variables().money + "\n");
+	$(output).wiki("Health: " + variables().health + "\n");
+	$(output).wiki("Hunger: " + variables().hunger + "\n");
+	$(output).wiki("Stink: " + variables().stink + "\n");
+	$(output).wiki("Stress: " + variables().stress + "\n\n");
+}
+
+
+function healthCheck(output)
+{
+	if (variables().health <= 0)
+    {
+		$.wiki('<<goto "Death">>');
+    }
+	else if (variables().health <= 10)
+    {
+		$(output).wiki("You're dying. Seek help immediately.\n");
+    }
+	else if (variables().health <= 30)
+    {
+		$(output).wiki("You're seriously injured. Maybe you can somehow manage to avoid paying the hospital bill if you play your cards right.\n");
+    }
+	else if (variables().health <= 65)
+    {
+		$(output).wiki("You're in serious pain. It hurts a lot but you have no choice but to deal with it.\n");
+    }
+}
+
+
+function formatTime(time)
+{
+	let hour = Math.floor(time);
+  	let minute = (60 * (time - hour)).toPrecision((60 * (time - hour) < 10)  ?  1  :  2);
+	if (minute < 10)
+    {
+		minute = "0" + minute;
+    }
+	return "" + hour + ":" + minute;
+}
+
+
+:: Beginning Passage {"position":"799,99","size":"100,100"}
 <<audio bgm loop volume 0.5 play>>
+<<set $day to 1>>
+<<set $money to 0>>
+<<set $health to 100>>
+<<set $stress to 25>>
+<<set $hunger to 4>>
+<<set $stink to 7>>
+<<set $time to 7.0>>
 
 The first thing you notice is that it’s cold—the type that sinks into your bones and replaces any lingering warmth that you might’ve retained from the tattered cloak that covers you. Next is the roughness of the concrete on the side of your face and on your hands as you hoist yourself up. 
 
@@ -34,7 +164,7 @@ But you could also go into the building and ask for a loaf of bread—or somethi
 [[Go to Stackler's.|Restaurant]]
 
 
-:: Restaurant {"position":"1877,849","size":"100,100"}
+:: Restaurant {"position":"876,248","size":"100,100"}
 You go inside the building! Gingerly, you approach the entrance. Opening the door leaves you standing there in the midst of finery. Warm air embraces you and the smells from outside are a thousand times stronger. You walk in further—no one bothers you. Further once more—no one. You are now almost at a table already set with food. A nice warm meal awaits you. You walk closer and—
 
 “—Excuse me sir, I’m sorry but you are not allowed in here.” An accented voice interrupts you. The host—a large, aged man—who had just rounded the corner after seating the previous customer (a familiar lady wearing pearls) walks up to you and starts pushing you out the door. Instantly, you are back in the cold.
@@ -50,8 +180,10 @@ You could continue to walk away and scavenge in that dumpster you saw earlier.
 [[Return to the Dumpster|Dumpster Visit II]]
 
 
-:: Dumpster Visit II {"position":"2009,1147","size":"100,100"}
+:: Dumpster Visit II {"position":"1008,546","size":"100,100"}
 Well, it’s probably not worth it to go back in anyways. You look away from the building; instead, you make your way back to the dumpster you saw earlier. Your stomach growls once more. It wouldn’t hurt to look…
+
+<<set $stink += 21>>
 
 You rummage through the dumpster, and in doing so, you don’t hear the backdoor of the building open. Neither do you see the large figure of the host taking out the garbage. He spots you and yells:
 
@@ -62,6 +194,9 @@ The man runs towards you with the trash bag braced in his hands.
 “Get—smACK!—away—sMACK!!—from—SMACK!!!—here!”
 
 You manage to flee, and while doing so, you rub your left chin and grimace — that’s bound to bruise.
+
+<<set $health -= 10>>
+<<CheckHealth>>				/*TODO: Although it probably doesn't matter for this story event, in the future, we need to make sure that the dialogue that pops up from the health check interacts with the story/random event the way we want it to.*/
 
 Sighing, you come to a stop, warily looking around. It seems that the host didn't follow you - much to your relief. Something catches your eye, however. Hanging patiently on the wall of an opposing building is a poster. You read: 
 
@@ -79,11 +214,14 @@ Interesting… a job could be very beneficial to you if you were to land it. Per
 [[>> It's not worth my time.|No Job]]
 
 
-:: Dumpster Visit I {"position":"1587,1149","size":"100,100"}
+:: Dumpster Visit I {"position":"574,549","size":"100,100"}
+<<set $stink += 21>>
+
 You dig through the dumpster! The bitter smell of garbage now clings to you, but you managed to find some leftovers good enough to eat.
 
 As you back away from the dumpster, a poster on the wall of the building catches your attention:
 
+<<set $hunger to 0>>
 
 HELP WANTED: LABOUR INTENSIVE JOB
 
@@ -98,7 +236,7 @@ Interesting… a job could be very beneficial to you if you were to land it. Per
 [[>> It's not worth my time.|No Job]]
 
 
-:: Return to Restaurant {"position":"1801,999","size":"100,100"}
+:: Return to Restaurant {"position":"800,398","size":"100,100"}
 You wait about half a minute before following after the couple. The host is gone from his usual station. Your gaze falls back to the warm meal on the table. The steak is practically off the frying pan, sizzling and steaming hot. There are guests all around, though, and there is no way that you wouldn’t be seen. You glance back at the door behind you.
 
 [[Steal the steak and RUN!|Steal]]
@@ -106,9 +244,12 @@ You wait about half a minute before following after the couple. The host is gone
 [[Sneak towards the kitchen for scraps.|Stealth]]
 
 
-:: Steal {"position":"1726,1149","size":"100,100"}
+:: Steal {"position":"724,549","size":"100,100"}
 Regardless of the watchful eyes, you grab the steak and run! No one makes a move to stop you. They just go back to enjoying their own meals.
 
+<<set $hunger = 0>>
+
+/*TODO: Add plate to inventory, once inventory gets implemented*/
 Your hunger is now satiated; the steak practically melted in your mouth - you even got the plate! Something catches your attention from the corner of your eye. A poster near the back of the building hangs patiently. You read: 
 
 
@@ -125,7 +266,7 @@ Interesting… a job could be very beneficial to you if you were to land it. Per
 [[>> It's not worth my time.|No Job]]
 
 
-:: Stealth {"position":"1876,1149","size":"100,100"}
+:: Stealth {"position":"874,549","size":"100,100"}
 With the eyes of wealthy patrons following your back, you sneak further in. The clashing and clinking of silverware hints that you’re sneaking in the right direction. You come to a door half ajar. As you peer into what you presume is the kitchen, you make eye contact with the host in the middle of reaching towards a garbage bag. He freezes, and his face reminds you of a tomato as he recognizes you. 
 
 “You! What are you doing here?? Out! OUT I SAY!”  He yells as he grabs a silver platter. The man then runs at you, and you have barely a second before—
@@ -133,6 +274,9 @@ With the eyes of wealthy patrons following your back, you sneak further in. The 
 —SMACK!
 
 Three strikes of the platter hit your shoulder, side, and lower chin. You are thrown out the back door before you know it, right into the very dumpster you were staring at before. You rub at your chin… that is sure to bruise, colourfully. You gingerly climb out of the dumpster, still hungry and now smelling of garbage. Fantastic.
+
+<<set $health -= 20>>
+<<set $stink += 14>>
 
 Rubbing your chin, you look around warily. Something catches your eye. Hanging patiently, on the very building you were kicked out of, is a poster. You read:
 
@@ -148,30 +292,324 @@ Interesting… a job could be very beneficial to you if you were to land it. Per
 [[>> It's not worth my time.|No Job]]
 
 
-:: Good Ending {"position":"1601,1698","size":"100,100"}
-Double-click this passage to edit it.
+:: Good Ending {"position":"1525,1875","size":"100,100"}
+Congratulations, due to your painstaking efforts you somehow managed to save up enough to feed, cloth, clean, and shelter yourself while looking for a stable job. Now that you are not so stinky and unreliable looking, employers are less reluctant to dismiss you so easily. You are finally free from a life of poor hygiene, but otherwise, the rising cost of living has made the differences appear to be aesthetic at best.
+
+/*Congratulations, you managed to overcome your addiction! You are finally free from the world of fantasy that kept you sane and now you have the opportunity to experience the joys of being unhoused in a modern city instead of a medieval one. Unfortunately, the differences appear to be aesthetic at best.*/
+
+Fin.
 
 
-:: Bad Ending {"position":"1800,1701","size":"100,100"}
-Double-click this passage to edit it.
+:: Bad Ending {"position":"1775,1950","size":"100,100"}
+You may not have the most fufilling or lavish lifestyle but...
+
+...
+
+...
+
+...
+
+Who am I kinding your life sucks, and the cycle never ends. One of these days, you will find yourself dead in an alley or park somewhere, but society will move on just fine without you, just like it has for so many before you. Oof.
 
 
-:: Death {"position":"2001,1698","size":"100,100"}
+Fin.
+
+
+:: Death {"position":"2025,1850","size":"100,100"}
 Oh dear, you have died before the age of 51, you have been unable to survive for the average lifespan of an unhoused person in the United States
 
-
-:: No Job {"position":"1597,1399","size":"100,100"}
-Double-click this passage to edit it.
+Fin.
 
 
-:: Job {"position":"2001,1401","size":"100,100"}
-Double-click this passage to edit it.
+:: No Job {"position":"599,799","size":"100,100"}
+/* Wrote some stuff for testing purposes, feel free to change.*/
+
+Did you think you would get a job smelling and looking like that? Tough luck.
+
+<<if $hunger > 0>>
+	You feel your stomach burning as you scavenge the streets for something to eat. Unfortunately, there's nothing around, and generosity seems to be absent from the hearts of the people today. Your vision starts to blur. You know this feeling. You've experienced it many times before. Better head back to your shelter before you pass out.
+<<else>>
+	Well, at least you managed to find something to eat. For now...
+    
+    Thinking that you may not be so lucky tomorrow, you spend the rest of the rest of the day looking for more food to bring home. Unfortunately, you did not find anything, and it is already getting late. This area is not the safest at night.
+    
+    Better head back to your shelter before something unfortunate happens.
+<</if>>
+
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
 
 
-:: StoryInit {"position":"2200,725","size":"100,100"}
+:: Job {"position":"999,799","size":"100,100"}
+It seems the employers must have been quite desperate this time, since even you got hired.
+
+Well, it was only a temporary one day deal, but still, you have some money in your pocket now.
+
+Hey, maybe you won't even need to steal your food tomorrow!
+
+The posting was not making an understatement when it said "LABOUR INTENSIVE" though. The job lasted all day, leaving you exhausted and hungry again. But still, you cannot help but feel excited. Things are looking up.
+
+<<set $hunger += 1>>
+<<set $stink += 1>>
+<<set $money += 120>>
+
+(It's late, better head home)
+
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
+
+
+:: Notes {"position":"174,799","size":"100,100"}
+/* Notes:
+
+Feel free to write random messages here, all this is commented out so players won't see anything.
+
+Remnants of some code macro whatever stuff , I'm leaving it here because it lists some locations we could/should add later:
+
+<<switch $location>>
+	<<case "Home">>
+    	It's nothing much but there's no place like it.
+        
+        In front of you lies your humble tent, hidden in the bushes of the park. Rags, bags and other paraphernalia lie strewn about, and the overall feel is quite dirty.
+        
+        <<JumpLocation "hello" "world">>
+        
+	<<case "Market">>
+    <<case "Hospital">>
+    <<case "Temp Agency">>
+    <<case "Restaurant">>
+    <<case "Downtown">>
+    <<case "Casino">>
+    <<case "Sketchy Alley">>
+    <<case "Public Bath">>
+<</switch>>
+*/
+
+
+
+
+yo, guys, there are some places in the actual story events (like story event 2 panel) where I was like "programmers, can you do something here?) So please read through them.
+
+
+:: Home {"position":"624,974","size":"100,100"}
+Home Shelter
+
+It's nothing much but there's no place like it.
+        
+In front of you lies your humble tent, hidden in the bushes of the park. Rags, bags and other paraphernalia lie strewn about, and the overall feel is quite dirty.
+
+<<link "Public bath">><<JumpLocation "Public Bath" false 0.25>><</link>>
+<<link "Temp agency">><<JumpLocation "Temp Agency" false 1>><</link>>
+
+
+:: Public Bath {"position":"749,974","size":"100,100"}
+/*I'm getting really tired, so this is gonna be a bit uncreative. feel free to change, this is just for demonstrative purposes anyways.*/
+
+Public Bath.
+
+"It's world hygiene day! For today only, we're offering free bath house usage for everyone!"
+
+<<linkreplace "Take a bath">>
+	<<set $stink to 0>>
+    <<set $time += 0.10>>
+	You are all clean!    
+<</linkreplace>>
+
+<<link "Home.">><<JumpLocation "Home" false 0.25>><</link>>
+
+
+:: Temp Agency {"position":"874,974","size":"100,100"}
+/*I'm getting really tired, so this is gonna be a bit uncreative. feel free to change, this is just for demonstrative purposes anyways.*/
+
+Temp Agency.
+
+A place to find work.
+
+<<if $stink <= 7>>
+	<<if $time <= 9>>
+		"Congratulations! You're our millionth prospective employee! Have $10"
+    	<<set $money += 10>>
+		<<link "Thanks!">><<JumpLocation "Home" true>><</link>>
+	<<else>>
+    	"We're sorry, job openings close at 9 am, please try again tomorrow."
+        <<link "Okay.... (go home)">><<JumpLocation "Home" false 1>><</link>>
+	<</if>>
+<<else>>
+	"Gag. The smell..." *faints*
+	<<link "Home.">><<JumpLocation "Home" false 1>><</link>>
+<</if>>
+
+
+:: Fall Asleep {"position":"999,974","size":"100,100"}
+You find yourself involuntarily falling asleep due to how late it is.
+
+<<link "Yawn...">><<JumpLocation "Home" true>><</link>>
+
+
+:: StoryInit {"position":"1199,124","size":"100,100"}
 /* -- Audio stuff -- */
 <<cacheaudio "bgm" "audio/temp_bgm.wav">>
 <<cacheaudio "hover" "audio/hover.wav">>  
 <<cacheaudio "confirm" "audio/confirm.wav">>
+
+
+:: Story Event 2 {"position":"1599,99.5","size":"100,100"}
+There’s a bottle in your hand. It’s glass cold against your palm as your stare at the pearlescent, glitter-filled liquid within. Temptation in all its glory.  
+
+There’s a phantom pain in your left knee, pulsing and burrowing into your bones - angrily tearing into the ligament. It isn’t physically real, you should know this, but, right now, it’s everything but fake. Right now, it’s real to you. 
+
+There’s a stray black cat digging through the dustbins beside you. It seems like you both share the same predicament. It stops, as if sensing your musings, and runs off. You sigh as you lay your head against the brick wall you’re resting against. The distraction doesn’t last very long before another aching pain travels out from your knee. Damn your old injury.
+
+[[Take A Drink?]] **Programmers, can a new take a drink button appear everytime they click it?
+
+[[Don't Take A Drink]] **Programmers, can this button not work?
+
+
+:: Take A Drink? {"position":"1601,299.5","size":"100,100"}
+You take a drink. It tastes like melted down peppermint-flavoured cotton candy. 
+
+[[Wait.|Wait1]]
+
+
+:: Don't Take A Drink {"position":"1801,99.5","size":"100,100"}
+Double-click this passage to edit it.
+
+
+:: Wait1 {"position":"1602,495.5","size":"100,100"}
+How long has it been?
+
+[[Wait.|Wait2]]
+
+
+:: Wait2 {"position":"1603,600.5","size":"100,100"}
+You feel nice and comfortable and warm. It’s so relaxing, you could just shut your eyes here…
+
+[[Fight It]]
+
+[[Give In]]
+
+
+:: Fight It {"position":"1498,800.5","size":"100,100"}
+You feel your eyes start to close, and you fight it with all your might. Forcing open your eyes seems to give a little shock to your heart and a headache slowly starts forming behind them. Falling asleep here would do you no good.
+
+[[Get Up]]
+
+[[Give In]]
+
+
+:: Give In {"position":"1698,801.5","size":"100,100"}
+There’s nothing here.
+
+At first.
+
+You can vaguely recall glimpses of a time encased in golden tones. A wistful memory perhaps. Something before the accident - before you were offered promises and lies coated in cotton candy and peppermint.
+
+[[...]]
+
+
+:: Get Up {"position":"1499,997.5","size":"100,100"}
+You struggle to your feet, carefully tucking the Elixir away in one of the inner parts of your cloak. As you stand, you can definitely feel it start to kick in. You feel rejuvenated, fresh, fantastic! Like you could do anything and everything. Better yet, your knee doesn’t hurt anymore. You hop around, feeling a little silly. It doesn’t matter, heck, you feel like you could fly!
+
+You stumble forward, and as you do so, you trip a little bit. Over what, you ask? Nothing that you can see. You even stubbed your toe! Not that you could feel it right now - the pain (you can still feel your toes, don’t worry!)
+
+Oh, look. The cat has returned. It looks at you curiously. To you, its fur looks particularly soft.
+
+You feel pleasantly light as you stagger towards the cat, hands reaching out. Nothing can touch you -  you’re the strongest person alive! Nothing can even try to stop—!!!
+
+THUD
+
+[[Give In]]
+
+
+:: ... {"position":"1700,1100.5","size":"100,100"}
+You come to slumped over, feeling as if ice is coursing through your veins. You can immediately tell that a couple of hours have passed. The taste of peppermint coats your tongue despite being out for about a half hour. Your skin is clammy and cold. You flex your hand - it feels weak and sluggish.
+
+There’s something else, though, something soft laying across our legs. You look up. The eyes of a black cat bores into your own. 
+
+“Excuse my intrusion,” It says.
+
+You blink once. Then twice, before yelping and launching the cat from your lap.
+
+It hisses angrily at you, and scuttles off. Hm, perhaps you imagined that.
+
+***Programmers, start the day with debuffs?
+
+
+:: Story Event 3 {"position":"2099,98.5","size":"100,100"}
+Double-click this passage to edit it.
+
+
+:: Story Event 4 {"position":"2401,99.5","size":"100,100"}
+Double-click this passage to edit it.
+
+
+:: Story Event 5 {"position":"2702,100.5","size":"100,100"}
+Double-click this passage to edit it.
+
+
+:: Story Event 6 {"position":"3002,99.5","size":"100,100"}
+[[Take Elixir]]
+
+[[Leave the Elixir]]
+
+
+:: Take Elixir {"position":"2902,299.5","size":"100,100"}
+The Elixir washes over you as you take it. Cotton candy sprouts from your insides like fungus, and peppermints are the spores they release. They spread throughout your entire body, and you no longer feel any pain. You sit down, relaxed.
+
+[[Wait.|Wait3]]
+
+
+:: Leave the Elixir {"position":"3102,297.5","size":"100,100"}
+You step away from the body resting in the dark alleyway, mentally restraining yourself. You won’t do it. Each step backwards hosts its own individual weight–thousands of tonnes of invisible force pushing against you. You’ll only make it so far. 
+
+Luck would have it, though, that as you walk backwards, slowly stepping into the sunlit streets of the neighbourhood, someone calls out to you. 
+
+“Hey!” The stranger calls out. You whip your head around, distracted for at least a moment. Recognition instantly flashes across your face as an old family friend hobbles over to you. 
+
+“I haven’t seen you in ages! You–” he looks you up and down, “--would you like to catch up over coffee? Something warm perhaps?” He sounds old, worried.
+
+[[You know what? Sure, why not?]]
+
+[[I’ve got something to... uh, do… maybe next time.]]
+
+
+:: Wait3 {"position":"2902,499.5","size":"100,100"}
+You feel much better now. Warm and fuzzy and nice. 
+
+[[Wait.|Wait4]]
+
+
+:: Wait4 {"position":"2902,602.5","size":"100,100"}
+You glance down at the body beside you. You should probably call for some help, but you just feel so comfortable—and it has been a while. You look away, leaning the back of your head against the wall. Taking a moment to yourself. You breathe deeply.
+
+[[Close Your Eyes]]
+
+
+:: Close Your Eyes {"position":"2902,797.5","size":"100,100"}
+You come to a few hours later, having fallen asleep. Your stomach is empty, and you feel cold. You feel goosebumps across your entire body as a shiver runs up your spine. There is still some Elixir left in the bottle. You sigh before stretching your neck and back and looking around. The body beside you is untouched and unmoving; you glance at it briefly before looking away. It winks at you. 
+
+Wait, hold on–
+
+You do a double take.
+
+The corpse on the ground is staring back at you– eyes wide open and pupils dilated. You place the Elixir down beside you to rub at your eyes. Surely they’re not open, right? No, no they’re definitely open. And as the loosened jaw of your recently deceased acquaintance starts to move, you cry out and scramble back to your feet. 
+
+It’s alive?! 
+
+It’s ALIVE!? 
+
+You think you see it start to blink and reach out towards you. Nothing else moves, but that’s enough for you. You dart out of the darkened alleyway–well, not before creeping forward to snatch the Elixir you placed down. You could swear it tried to crawl closer to you when you did.
+
+Anyways, it’s a good thing you got out of there before your (not-so)-zombie friend could turn you too, but it’s also a shame that you couldn’t hear the greeting of a familiar face down the road. Quite unfortunate.
+
+
+:: You know what? Sure, why not? {"position":"3035,607.5","size":"100,100"}
+You spend the rest of the day talking with an old friend. I wish you could see your heavy eyes lighten as he did. The coffee was nice. You two plan to do this more often. For now, though, it’s time for you to head back - it’s getting dark.
+
+
+:: I’ve got something to... uh, do… maybe next time. {"position":"3145,607.5","size":"100,100"}
+The man visibly dims, frowning briefly. “Well, if you ever need me, I’m just off of 123 Purdue Lane. Perhaps we’ll pass each other again.” He hobbles past you, patting your shoulder in farewell. You stand there for a little bit, contemplating. But anyways! It’s about time to do… Well, whatever you were planning to do. Shall we?
+
+
+:: Story Event 7 {"position":"3300,101.5","size":"100,100"}
+not sure how to implement this one bois lots of if statements
 
 

@@ -1,0 +1,101 @@
+//------CODE------\\
+
+//Put this in story Javascript
+
+Macro.add('hangman',
+{
+    handler: function ()
+    {
+        
+        try{
+            var letter = "" // input letter
+          	var word = ""; //this is the word we are trying to find and compare to
+            var hidden = ""; // this is what we show
+            let self = this;
+          	var found = false;
+			
+            // $(this.output).wiki(this.args[0]);
+          	word = State.getVar("$message").toLowerCase();
+            letter = State.getVar("$letter");
+            hidden = State.getVar("$hidden");
+          	var tries = State.getVar("$tries");
+            const wordArray = hidden.split("");
+
+   
+            
+
+            // check to make sure user input is only 1 
+            let length = letter.length;
+            if (length!=1){
+                $(this.output).wiki("Enter one letter only!\n");
+                $(this.output).wiki(hidden+"\n");
+                return;
+            }
+
+            // check to see if letter is in string
+            for (let i=0; i<word.length;i++){
+                if(word[i]==letter){
+                    wordArray[i+i] = letter
+                  	found = true
+                  	
+                }
+            }
+			
+          	
+            hidden = wordArray.join("")
+            State.variables.hidden=hidden
+          	
+			
+			
+            $(this.output).wiki(hidden+"\n");
+          
+          	if (found){
+              	$(this.output).wiki("Amazing, keep it up!"+"\n");
+            }else{
+              	$(this.output).wiki("Try again"+"\n");
+              	State.variables.tries=tries-1
+              	
+            }
+           
+         
+        }
+        catch(e){
+            return this.error(e.message); 
+        }
+    }
+
+
+});
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//------Previous Passage------\\
+//Add this to the previous passage to initialize/re-initialize these variables
+
+<<set $message to "Cat">> // replace cat with what ever word
+<<set $hidden to "_ _ _">> // add however many underscores and lines the word needs
+<<set $letter to "">> // don not change this
+<<set $sovled to false>> // do not change this
+<<set $tries to 3>> // set tries to however many tries you want to give
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//------Current Passage------\\
+//Add this to the current passage
+
+Try to guess this 3 letter word! 
+
+<<hangman>>
+
+You have $tries tries remaining
+<<textbox "$text" "" autofocus>> \
+<<button "?">>
+<<set $letter to $text>>
+<<goto "Untitled Passage">>
+<</button>>
+
+<<if $tries is 0>>
+<<timed 0.00001s>><<goto "new">> // name new to whatever is the next passage
+<</if>>
+
+
