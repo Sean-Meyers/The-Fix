@@ -13,6 +13,74 @@ TheFix
 
 
 :: Story JavaScript [script]
+let date = new Date("2021-01-31T07:00:00");
+
+function getDay()
+{
+	return new Intl.DateTimeFormat("en-US", {day: "numeric"}).format(date);
+}
+
+function getMonth()
+{
+	return new Intl.DateTimeFormat("en-US", {month: "long"}).format(date);
+}
+
+function getWeekDay()
+{
+	return new Intl.DateTimeFormat("en-US", {weekday: "long"}).format(date);
+}
+
+function getDateTime()
+{
+	return new Intl.DateTimeFormat("en-US",
+									{weekday: "long",
+									 month: "long",
+									 day: "numeric",
+									 hour: "numeric",
+									 minute: "numeric"}).format(date);
+}
+
+//function getTime() {}
+
+// If the day turned over after adding the specified amount of time, return true, else false.
+// If the day would be turned over, sets the time to 11:59pm instead.
+function addTime(minutes)
+{
+	let before = getDay();
+	date.setTime(date.getTime() + (minutes * 60000));
+	let passOut = getDay() > before;
+	if (passOut)
+	{
+		date.setHours(-1, 59, 0);
+	}
+	return passOut;
+}
+
+function nextDay()
+{
+	date.setHours(31, 0, 0);
+}
+
+
+Macro.add("AddTime",
+{
+	handler: function ()
+	{
+		try
+        {
+			if (addTime(this.args[0]))
+			{
+				$.wiki('<<goto "Pass Out">>');
+			}
+        }
+		catch(e)
+    	{
+    		return this.error(e.message);
+    	}
+    }
+});
+
+
 Macro.add('JumpLocation',
 {
   handler: function ()
@@ -20,19 +88,26 @@ Macro.add('JumpLocation',
   	try
   	{
 		let self = this;
+		variables().location = this.args[0];
     	if (this.args[1] === true)
         {
 			$(document).one(":passagestart", function (ev)
 			{              
 				// Start a new day
-				variables().day += 1;
-				variables().time = 7.0;
+				// variables().day += 1;
+				// variables().time = 7.0 + ((self.args[2])  ?  self.args[2]  :  0);
+				nextDay();
+				if (self.args[2])
+				{
+					addTime(self.args[2]);
+				}
 				variables().hunger += 1;
 				variables().stink += 1;
               
-				if (variables().day > 2)
+				// if (variables().day > 28)
+				if (getMonth() != 'February')
 				{
-            		if (variables().money > 5)
+            		if (variables().money > 5)	//FIXME: Don't forget to change the ending condition
             		{
 						$.wiki('<<goto "Good Ending">>');
             		}
@@ -45,9 +120,52 @@ Macro.add('JumpLocation',
             	{
 					$(ev.content).wiki("You haven't eaten in 5 days. If you keep this up you might die.\n");
 					variables().health -= variables().hunger;
-					healthCheck(ev.content);
             	}
-              
+
+				// switch(variables().day)
+				switch(getDay())
+				{
+					case '4':
+						$.wiki('<<goto "Story Event 2">>');
+						break;
+					case '8':
+						$.wiki('<<goto "Story Event 3">>');
+						break;
+					case '12':
+						$.wiki('<<goto "Story Event 4">>');
+						break;
+					case '16':
+						$.wiki('<<goto "Story Event 5">>');
+						break;
+					case '20':
+						$.wiki('<<goto "Story Event 6">>');
+						break;
+					case '24':
+						$.wiki('<<goto "Story Event 7">>');
+						break;
+					default:
+						break;
+				}
+
+				let stolenMoney = 0;
+				let rng = random(100);
+				if (variables().location != "Home" && variables().location != "Hospital")
+				{	
+					if (rng > 30)
+					{
+						stolenMoney = random(0, Math.floor(variables().money / 2));
+					}
+				}
+				if (stolenMoney > 0)
+				{
+					loseMoney(stolenMoney);
+					$(ev.content).wiki("You dreamed that someone was rummaging through your pockets last night.\n");
+				}
+				// else		// DEBUG
+				// {
+				// 	console.log("rng: " + rng + " location: " + variables().location);
+				// }
+				healthCheck(ev.content);
 				wikiStats(ev.content);
 			});	
         }
@@ -55,12 +173,12 @@ Macro.add('JumpLocation',
         {
 			$(document).one(":passagestart", function (ev)
 			{
-				console.log(self.args);
-				variables().time += ((self.args[2])  ?  self.args[2]  :  1);
+				let passOut = ((self.args[2])  ?  addTime(self.args[2])  :  addTime(60));
+				healthCheck(ev.content);
 				wikiStats(ev.content);
-				if (variables().time > 10)	//currently set to 10am for testing purposes.
+				if (passOut)
                 {
-					$.wiki('<<goto "Fall Asleep">>');
+					$.wiki('<<goto "Pass Out">>');
                 }
             });
         }
@@ -91,14 +209,104 @@ Macro.add("CheckHealth",
 });
 
 
+Macro.add("PassOutHigh",
+{
+	handler: function ()
+	{
+		try
+        {
+			let stuff = passOutHigh(this.args[0], this.args[1]);	// 0: severity,  1: location
+			let sleepIn = stuff.pop();
+			let location = stuff.pop();
+			$(document).one(":passagestart", function (ev)
+			{
+				$(ev.content).wiki("Last night was wild. Not that you remember any of it...\n");
+				for (const message of stuff)
+				{
+					$(ev.content).wiki(message);
+				}
+				$(ev.content).wiki('<<link "Carry on...">><<JumpLocation ' + '"' + location + '"' + ' true ' + '"' + sleepIn + '"' + '>><</link>>');
+			});
+			$.wiki('<<goto "Pass Out High">>');
+        }
+		catch(e)
+    	{
+    		return this.error(e.message);
+    	}
+    }
+});
+
+
+Macro.add("UpdateStat",
+{
+	handler: function ()
+	{
+		try
+        {
+			switch (this.args[0])
+			{
+				case "Time":
+					$.wiki("<<AddTime " + this.args[1] + ">>");
+					$.wiki("<<replace '#currentDateTime'>>" + getDateTime() + "<</replace>>");
+					break;
+
+				case "Money":
+					switch (this.args[1])
+					{
+						case 'purchase':
+							$.wiki("<<set _purchaseSuccess to false>>")
+							temporary().purchaseSuccess = loseMoney(this.args[2], false);
+							break;
+
+						case 'steal':
+							loseMoney(this.args[2]);
+							break;
+
+						case 'debt':
+							variables().money -= this.args[2];
+							break;
+
+						default:
+							break;
+					}
+					$.wiki("<<replace '#currentMoney'>>$money<</replace>>");
+					break;
+
+				case "Health":
+					variables().health += this.args[1];	// Give it a negative number if you want health to be lost
+					$.wiki("<<replace '#currentHealth'>>$health<</replace>>");
+					break;
+
+				case "Hunger":
+					if (this.args[1] == "eat") { variables().hunger = 0; }
+					else { variables().hunger += this.args[1]; }
+					$.wiki("<<replace '#currentHunger'>>$hunger<</replace>>");
+					break;
+
+				case "Stink":
+					if (this.args[1] == "wash") { variables().stink = 0; }
+					else { variables().stink += this.args[1]; }
+					$.wiki("<<replace '#currentStink'>>$stink<</replace>>");
+
+				default:
+					break;
+			}
+        }
+		catch(e)
+    	{
+    		return this.error(e.message);
+    	}
+    }
+});
+
+
 function wikiStats(output)
 {
-	$(output).wiki("\nJanuary " + variables().day + ",	" + formatTime(variables().time) + "\n\n");
-	$(output).wiki("Money: " + variables().money + "\n");
-	$(output).wiki("Health: " + variables().health + "\n");
-	$(output).wiki("Hunger: " + variables().hunger + "\n");
-	$(output).wiki("Stink: " + variables().stink + "\n");
-	$(output).wiki("Stress: " + variables().stress + "\n\n");
+	$(output).wiki('\n' + "<span id='currentDateTime'>" + getDateTime() + "</span>" + "\n\n");
+	$(output).wiki("Money 🪙: " + "<span id='currentMoney'>" + variables().money + "</span>" + "\n");
+	$(output).wiki("Health ❤️: " + "<span id='currentHealth'>" + variables().health + "</span>" + " / 100\n");
+	$(output).wiki("Hunger 🍖: " + "<span id='currentHunger'>" + variables().hunger + "</span>" + " day(s) worth of malnutrition\n");
+	$(output).wiki("Stink 🦨: " + "<span id='currentStink'>" + variables().stink + "</span>" + " day(s) worth of uncleanliness\n");
 }
 
 
@@ -123,27 +331,102 @@ function healthCheck(output)
 }
 
 
-function formatTime(time)
+// Return whether the player has at least 'amount' money before losing money
+// If steal is false, the player will not lose any money if 'amount' is more than how much the player currently has.
+function loseMoney(amount, steal=true)
 {
-	let hour = Math.floor(time);
-  	let minute = (60 * (time - hour)).toPrecision((60 * (time - hour) < 10)  ?  1  :  2);
-	if (minute < 10)
-    {
-		minute = "0" + minute;
-    }
-	return "" + hour + ":" + minute;
+	if (variables().money < amount)
+	{
+		variables().money -= ((steal)  ?  variables().money  :  0);
+		return false
+	} else
+	{
+		variables().money -= amount;
+	}
+	return true
+}
+
+
+function passOutHigh(severity, location)
+{
+	let result = [];
+
+	// health
+	let injuries = Math.floor(random(75) * severity);
+	if (injuries > 50)
+	{	result.push("\nYou wake up in a hospital. Apparently you got hit by a car. They gave you complimentary basic treatment but, don't expect to walk away rosy on your budget. Also, you still have to pay for the ambulance. Sucks to be you.\n");
+		variables().money -= 500;	// If this puts your money below 0, it just means you have debt (may change this later if it makes the game too hard)
+	}
+	else if (injuries > 25)
+	{	result.push("\nYou wake up with bruises all over. You can barely move. What in the world happened last night?\n");
+	}
+	else if (injuries > 0)
+	{	result.push("\nYou wake up in rough shape. Just what in the world happened last night?\n");
+	}
+	variables().health -= injuries;
+	// If they would die due to their injuries, lets be nice and make it so they don't die.
+	// Well, they'll still die if they're starving though.
+	if (variables().health < 1)
+	{	variables().health = 1;
+	}
+
+	// location
+	if (injuries >= 50)
+	{	location = "Hospital"
+		result.push("\nMost wouldn't be impressed with hospital food, but it's better than what you normally have access to.\n");
+		variables().hunger = 0;
+		// TODO: If you decide to make high stink levels inflict damage, don't forget to make sure the player doesn't die from it after waking up in the hospital here.
+	}
+	else if (!location)
+	{	location = ["River", "Hospital", "Home", "Farmer's Market", "Downtown", "Sketchy Alley"][random(5)];	
+	}
+	else if (location == "default")
+	{	location = variables().location;
+	}
+	else
+	{	if (location != variables().location)
+		{	result.push("\nYou wake up in a strange place. You don't recall how you got here. You're not surprised though. It's nothing unusual for you.\n");
+		}
+	}
+
+	// hunger
+	if (injuries < 50)
+	{	let munchies = Math.floor(random(5) * severity);
+		result.push("\nYou wake up famished.\n");
+		variables().hunger += munchies;
+	}
+
+	// stink
+	let excretions = Math.floor(random(30) * severity);
+	if (excretions > 0)
+	{	if (excretions < 15)
+		{	result.push("\nYou wake up drenched in sweat.\n");
+		}
+		else
+		{	result.push("\nYou wake up smelling like a toilet.\n");
+		}
+	}
+	variables().stink += excretions;
+
+	result.push(location);
+
+	// time
+	// let sleepIn = randomFloat(3, 11) * severity;
+	let sleepIn = randomFloat(180, 660) * severity;
+	result.push(sleepIn);
+
+	return result;
 }
 
 
 :: Beginning Passage {"position":"799,99","size":"100,100"}
 <<audio bgm loop volume 0.5 play>>
-<<set $day to 1>>
+<<set $soap to 0>>
 <<set $money to 0>>
 <<set $health to 100>>
-<<set $stress to 25>>
 <<set $hunger to 4>>
 <<set $stink to 7>>
-<<set $time to 7.0>>
+<<set $location to "Sketchy Alley">>
 
 The first thing you notice is that it’s cold—the type that sinks into your bones and replaces any lingering warmth that you might’ve retained from the tattered cloak that covers you. Next is the roughness of the concrete on the side of your face and on your hands as you hoist yourself up. 
 
@@ -389,35 +672,59 @@ Remnants of some code macro whatever stuff , I'm leaving it here because it list
 yo, guys, there are some places in the actual story events (like story event 2 panel) where I was like "programmers, can you do something here?) So please read through them.
 
 
-:: Home {"position":"624,974","size":"100,100"}
+:: Home {"position":"650,1075","size":"100,100"}
+
 Home Shelter
 
 It's nothing much but there's no place like it.
         
 In front of you lies your humble tent, hidden in the bushes of the park. Rags, bags and other paraphernalia lie strewn about, and the overall feel is quite dirty.
 
-<<link "Public bath">><<JumpLocation "Public Bath" false 0.25>><</link>>
-<<link "Temp agency">><<JumpLocation "Temp Agency" false 1>><</link>>
+<<link "Go to sleep (ends day)">><<JumpLocation "Home" true>><</link>>
+
+<<link "Wait 6 hours (Debug)">><<JumpLocation "Home" false 360>><</link>>	/*TODO: Remove */
+<<link "Pass Out High (Debug)">><<PassOutHigh 0.5>><</link>>	/*TODO: Remove */
+<<link "Pass Out High Default Location (Debug)">><<PassOutHigh 0.5 "default">><</link>>	/*TODO: Remove */
+<<link "Pass Out High Downtown (Debug)">><<PassOutHigh 0.5 "Downtown">><</link>>	/*TODO: Remove */
+<<link "Pass Out High Casino (Debug)">><<PassOutHigh 0.5 "Casino">><</link>>	/*TODO: Remove */
+<<link "+$100 (Debug)">><<set $money += 100>><</link>>	/*TODO: Remove */
+
+<<link "River">><<JumpLocation "River" false 15>><</link>>
+<<link "Convenience Store">><<JumpLocation "Convenience Store" false 5>><</link>>
+<<link "Temp agency">><<JumpLocation "Temp Agency" false 60>><</link>>
+<<link "Downtown">><<JumpLocation "Downtown" false 30>><</link>>
 
 
-:: Public Bath {"position":"749,974","size":"100,100"}
-/*I'm getting really tired, so this is gonna be a bit uncreative. feel free to change, this is just for demonstrative purposes anyways.*/
+:: River {"position":"725,950","size":"100,100"}
+River
+/*TODO: Description
 
-Public Bath.
+Random Events:
+Fall in River (1%) -75hp (you nearly drowned) (MAYBE)
+*/
+Soap 🧼: $soap
 
-"It's world hygiene day! For today only, we're offering free bath house usage for everyone!"
-
-<<linkreplace "Take a bath">>
-	<<set $stink to 0>>
-    <<set $time += 0.10>>
-	You are all clean!    
+<<linkreplace "Wash Up (-1 soap 🧼)">>
+	<<if $soap > 0>>	
+		<<UpdateStat "Stink" "wash">>
+		<<set $soap -= 1>>
+		You are all clean!
+	<<else>>
+		The grime is just too sticky to get off without soap.
+	<</if>>
+    <<UpdateStat "Time" 15>>
 <</linkreplace>>
 
-<<link "Home.">><<JumpLocation "Home" false 0.25>><</link>>
+<<link "Home.">><<JumpLocation "Home" false 15>><</link>>
 
 
-:: Temp Agency {"position":"874,974","size":"100,100"}
-/*I'm getting really tired, so this is gonna be a bit uncreative. feel free to change, this is just for demonstrative purposes anyways.*/
+:: Temp Agency {"position":"775,1075","size":"100,100"}
+/*TODO
+Actions:
+Apply For Day Job (50 - 7 * Stink % chance to land a job)	7am - 9am M-F
+
+// FIXME: Change it to how it should be.
+*/
 
 Temp Agency.
 
@@ -430,18 +737,43 @@ A place to find work.
 		<<link "Thanks!">><<JumpLocation "Home" true>><</link>>
 	<<else>>
     	"We're sorry, job openings close at 9 am, please try again tomorrow."
-        <<link "Okay.... (go home)">><<JumpLocation "Home" false 1>><</link>>
+        <<link "Okay.... (go home)">><<JumpLocation "Home" false 60>><</link>>
 	<</if>>
 <<else>>
 	"Gag. The smell..." *faints*
-	<<link "Home.">><<JumpLocation "Home" false 1>><</link>>
+	<<link "Home.">><<JumpLocation "Home" false 60>><</link>>
 <</if>>
 
+<<link "Home.">><<JumpLocation "Home" false 60>><</link>>
+<<link "Sketchy Alley">><<JumpLocation "Sketchy Alley" false 5>><</link>>
 
-:: Fall Asleep {"position":"999,974","size":"100,100"}
-You find yourself involuntarily falling asleep due to how late it is.
 
-<<link "Yawn...">><<JumpLocation "Home" true>><</link>>
+:: Pass Out {"position":"1100,1000","size":"100,100"}
+<<switch $location>>
+	<<case "Home" "Hospital">>
+		You find yourself involuntarily falling asleep due to how late it is.
+	<<case "Casino" "Police Station" "Convenience Store" "Temp Agency" "Stackler's Steak House">>
+		"...ey! ... can't sleep here! ..." 
+
+		You are barely lucid. The blurry figures of two large men hoist you by the arms as you pass out. For a moment you feel the bite of cold outside air, and then next the harsh thump of concrete. As you close your eyes, your last muddled thoughts are "Ah, I hope I don't get frostbite."
+		<<set $health -= 5>>
+	<<default>>
+		You are barely lucid. It seems your body is bound and determined to shut down. Even the biting outside cold cannot stop it. As you close your eyes, your last muddled thoughts are "Ah, I hope I don't get frostbite."
+		<<set $health -= 5>>
+<</switch>>
+
+Waking up at a reasonable time is going to be a challenge.
+<<set _sleepIn to 0.0>>
+<<script>>
+	// temporary().sleepIn = randomFloat(0.5, 8.01);
+	temporary().sleepIn = random(30, 480);
+<</script>>
+
+<<link "...">><<JumpLocation $location true _sleepIn>><</link>>
+
+
+:: Pass Out High {"position":"1199,1000","size":"100,100"}
+/*Intentionally left blank (it gets filled in when javascript functions get called) DO NOT REMOVE!*/
 
 
 :: StoryInit {"position":"1199,124","size":"100,100"}
@@ -451,7 +783,7 @@ You find yourself involuntarily falling asleep due to how late it is.
 <<cacheaudio "confirm" "audio/confirm.wav">>
 
 
-:: Story Event 2 {"position":"1599,99.5","size":"100,100"}
+:: Story Event 2 {"position":"1600,100","size":"100,100"}
 There’s a bottle in your hand. It’s glass cold against your palm as your stare at the pearlescent, glitter-filled liquid within. Temptation in all its glory.  
 
 There’s a phantom pain in your left knee, pulsing and burrowing into your bones - angrily tearing into the ligament. It isn’t physically real, you should know this, but, right now, it’s everything but fake. Right now, it’s real to you. 
@@ -463,23 +795,23 @@ There’s a stray black cat digging through the dustbins beside you. It seems li
 [[Don't Take A Drink]] **Programmers, can this button not work?
 
 
-:: Take A Drink? {"position":"1601,299.5","size":"100,100"}
+:: Take A Drink? {"position":"1601,299","size":"100,100"}
 You take a drink. It tastes like melted down peppermint-flavoured cotton candy. 
 
 [[Wait.|Wait1]]
 
 
-:: Don't Take A Drink {"position":"1801,99.5","size":"100,100"}
+:: Don't Take A Drink {"position":"1801,99","size":"100,100"}
 Double-click this passage to edit it.
 
 
-:: Wait1 {"position":"1602,495.5","size":"100,100"}
+:: Wait1 {"position":"1602,495","size":"100,100"}
 How long has it been?
 
 [[Wait.|Wait2]]
 
 
-:: Wait2 {"position":"1603,600.5","size":"100,100"}
+:: Wait2 {"position":"1603,600","size":"100,100"}
 You feel nice and comfortable and warm. It’s so relaxing, you could just shut your eyes here…
 
 [[Fight It]]
@@ -487,7 +819,7 @@ You feel nice and comfortable and warm. It’s so relaxing, you could just shut 
 [[Give In]]
 
 
-:: Fight It {"position":"1498,800.5","size":"100,100"}
+:: Fight It {"position":"1498,800","size":"100,100"}
 You feel your eyes start to close, and you fight it with all your might. Forcing open your eyes seems to give a little shock to your heart and a headache slowly starts forming behind them. Falling asleep here would do you no good.
 
 [[Get Up]]
@@ -495,7 +827,7 @@ You feel your eyes start to close, and you fight it with all your might. Forcing
 [[Give In]]
 
 
-:: Give In {"position":"1698,801.5","size":"100,100"}
+:: Give In {"position":"1698,801","size":"100,100"}
 There’s nothing here.
 
 At first.
@@ -505,7 +837,7 @@ You can vaguely recall glimpses of a time encased in golden tones. A wistful mem
 [[...]]
 
 
-:: Get Up {"position":"1499,997.5","size":"100,100"}
+:: Get Up {"position":"1499,997","size":"100,100"}
 You struggle to your feet, carefully tucking the Elixir away in one of the inner parts of your cloak. As you stand, you can definitely feel it start to kick in. You feel rejuvenated, fresh, fantastic! Like you could do anything and everything. Better yet, your knee doesn’t hurt anymore. You hop around, feeling a little silly. It doesn’t matter, heck, you feel like you could fly!
 
 You stumble forward, and as you do so, you trip a little bit. Over what, you ask? Nothing that you can see. You even stubbed your toe! Not that you could feel it right now - the pain (you can still feel your toes, don’t worry!)
@@ -519,7 +851,7 @@ THUD
 [[Give In]]
 
 
-:: ... {"position":"1700,1100.5","size":"100,100"}
+:: ... {"position":"1700,1100","size":"100,100"}
 You come to slumped over, feeling as if ice is coursing through your veins. You can immediately tell that a couple of hours have passed. The taste of peppermint coats your tongue despite being out for about a half hour. Your skin is clammy and cold. You flex your hand - it feels weak and sluggish.
 
 There’s something else, though, something soft laying across our legs. You look up. The eyes of a black cat bores into your own. 
@@ -530,34 +862,40 @@ You blink once. Then twice, before yelping and launching the cat from your lap.
 
 It hisses angrily at you, and scuttles off. Hm, perhaps you imagined that.
 
-***Programmers, start the day with debuffs?
+<<link "...">><<PassOutHigh 0.25>><</link>>		/*TODO: Make the severity (currently 0.25) depend on choices in the dialogue, and/or a minigame. */
 
 
-:: Story Event 3 {"position":"2099,98.5","size":"100,100"}
+:: Story Event 3 {"position":"2099,98","size":"100,100"}
 Double-click this passage to edit it.
 
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
 
-:: Story Event 4 {"position":"2401,99.5","size":"100,100"}
+
+:: Story Event 4 {"position":"2401,99","size":"100,100"}
 Double-click this passage to edit it.
 
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
 
-:: Story Event 5 {"position":"2702,100.5","size":"100,100"}
+
+:: Story Event 5 {"position":"2702,100","size":"100,100"}
 Double-click this passage to edit it.
 
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
 
-:: Story Event 6 {"position":"3002,99.5","size":"100,100"}
+
+:: Story Event 6 {"position":"3002,99","size":"100,100"}
 [[Take Elixir]]
 
 [[Leave the Elixir]]
 
 
-:: Take Elixir {"position":"2902,299.5","size":"100,100"}
+:: Take Elixir {"position":"2902,299","size":"100,100"}
 The Elixir washes over you as you take it. Cotton candy sprouts from your insides like fungus, and peppermints are the spores they release. They spread throughout your entire body, and you no longer feel any pain. You sit down, relaxed.
 
 [[Wait.|Wait3]]
 
 
-:: Leave the Elixir {"position":"3102,297.5","size":"100,100"}
+:: Leave the Elixir {"position":"3102,297","size":"100,100"}
 You step away from the body resting in the dark alleyway, mentally restraining yourself. You won’t do it. Each step backwards hosts its own individual weight–thousands of tonnes of invisible force pushing against you. You’ll only make it so far. 
 
 Luck would have it, though, that as you walk backwards, slowly stepping into the sunlit streets of the neighbourhood, someone calls out to you. 
@@ -571,19 +909,19 @@ Luck would have it, though, that as you walk backwards, slowly stepping into the
 [[I’ve got something to... uh, do… maybe next time.]]
 
 
-:: Wait3 {"position":"2902,499.5","size":"100,100"}
+:: Wait3 {"position":"2902,499","size":"100,100"}
 You feel much better now. Warm and fuzzy and nice. 
 
 [[Wait.|Wait4]]
 
 
-:: Wait4 {"position":"2902,602.5","size":"100,100"}
+:: Wait4 {"position":"2902,602","size":"100,100"}
 You glance down at the body beside you. You should probably call for some help, but you just feel so comfortable—and it has been a while. You look away, leaning the back of your head against the wall. Taking a moment to yourself. You breathe deeply.
 
 [[Close Your Eyes]]
 
 
-:: Close Your Eyes {"position":"2902,797.5","size":"100,100"}
+:: Close Your Eyes {"position":"2902,797","size":"100,100"}
 You come to a few hours later, having fallen asleep. Your stomach is empty, and you feel cold. You feel goosebumps across your entire body as a shiver runs up your spine. There is still some Elixir left in the bottle. You sigh before stretching your neck and back and looking around. The body beside you is untouched and unmoving; you glance at it briefly before looking away. It winks at you. 
 
 Wait, hold on–
@@ -600,16 +938,314 @@ You think you see it start to blink and reach out towards you. Nothing else move
 
 Anyways, it’s a good thing you got out of there before your (not-so)-zombie friend could turn you too, but it’s also a shame that you couldn’t hear the greeting of a familiar face down the road. Quite unfortunate.
 
+<<link "...">><<PassOutHigh 0.25>><</link>>		/*TODO: Make the severity (currently 0.25) depend on choices in the dialogue, and/or a minigame. */
 
-:: You know what? Sure, why not? {"position":"3035,607.5","size":"100,100"}
+
+:: You know what? Sure, why not? {"position":"3035,607","size":"100,100"}
 You spend the rest of the day talking with an old friend. I wish you could see your heavy eyes lighten as he did. The coffee was nice. You two plan to do this more often. For now, though, it’s time for you to head back - it’s getting dark.
 
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
 
-:: I’ve got something to... uh, do… maybe next time. {"position":"3145,607.5","size":"100,100"}
+
+:: I’ve got something to... uh, do… maybe next time. {"position":"3145,607","size":"100,100"}
 The man visibly dims, frowning briefly. “Well, if you ever need me, I’m just off of 123 Purdue Lane. Perhaps we’ll pass each other again.” He hobbles past you, patting your shoulder in farewell. You stand there for a little bit, contemplating. But anyways! It’s about time to do… Well, whatever you were planning to do. Shall we?
 
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
 
-:: Story Event 7 {"position":"3300,101.5","size":"100,100"}
+
+:: Story Event 7 {"position":"3300,101","size":"100,100"}
 not sure how to implement this one bois lots of if statements
+
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
+
+
+:: Downtown {"position":"651,1200","size":"100,100"}
+Downtown
+/*TODO
+Actions:
+Panhandle (2h)	10% chance to get $10
+
+Random Events:
+Get pickpocketed (5%)
+*/
+<<link "Sketchy Alley">><<JumpLocation "Sketchy Alley" false 5>><</link>>
+<<link "Stackler's Steak House">><<JumpLocation "Stackler's Steak House" false 5>><</link>>
+<<link "Police Station">><<JumpLocation "Police Station" false 5>><</link>>
+<<link "Farmer's Market">><<JumpLocation "Farmer's Market" false 5>><</link>>
+<<link "Hospital">><<JumpLocation "Hospital" false 30>><</link>>
+<<link "Casino">><<JumpLocation "Casino" false 30>><</link>>
+<<link "Home">><<JumpLocation "Home" false 30>><</link>>
+
+
+:: Sketchy Alley {"position":"775,1200","size":"100,100"}
+Sketchy Alley
+/*TODO
+Actions:
+Talk to dealer	(10min, only on wednesdays)		Sells black market items like Elixer, Pistol, Ammo, Mysterious Looking Meat
+
+Random Events:
+Get mugged (5% + 5% * hours past 6pm)
+*/
+<span id="dialogue"> </span>
+
+<<link "Scavange Dumpster 🍖 (🦨)">>
+	<<replace "#dialogue">>You're as desperate as they come. Dignity is long beyond you as you rummage through unspeakable, unidentifyable organic matter in search of food.<</replace>>
+	<<UpdateStat "Stink" 21>>
+	<<UpdateStat "Time" 20>>
+	
+	<<set _foundFood to false>>
+	<<script>>
+		let rng = random(100);
+		if (rng > 50)
+		{
+			temporary().foundFood = true;
+		}
+	<</script>>
+
+	<<if _foundFood>>
+		<<append "#dialogue">>
+		
+		Gleefully, you munch 🍖 on the uh... whatever that is... If someone were watching, they would probably feel so sorry for you that they would offer you something better to eat. That is, if they didn't run away in disgust first at least.
+		<</append>>
+		<<UpdateStat "Hunger" 'eat'>>
+	<<else>>
+		<<append "#dialogue">>
+		
+		The contents of the dumpster were so putrid that even the likes of you wouldn't eat it. Dejected, you walk away from the dumpster.
+		<</append>>
+	<</if>>
+<</link>>
+
+<<link "Stackler's Steak House">><<JumpLocation "Stackler's Steak House" false 5>><</link>>
+<<link "Temp Agency">><<JumpLocation "Temp Agency" false 5>><</link>>
+<<link "Downtown">><<JumpLocation "Downtown" false 5>><</link>>
+
+/* SKETCHY MAN
+As you enter the area, you find that there are a lot more people (who you’d define as “sketchy”) around the place. Your eyes wander, and you see all sorts of things on display for sale: guns, syringes, stolen goods (all at unfathomable prices), as well as some odd looking food. Unfortunately, as you are looking around, you make eye contact with a vendor. One of his eyes looks at you, silver and unblinking, whereas the other looks normal. It creeps you out a little bit. 
+
+“Whit dae yi'll waant,” he says gruffly, “wantae buy?” 
+
+>>SECOND TIME: “Och ye'r back. Noo whit dae yi'll waant? Didnae git enough lest time?”
+			
+[Buy Mysterious Looking Meat]
+
+“Buzz daein' business wi' ye, 'til neist time.” Having not a clue what he said, you head back with the funky looking meat you bought.
+[Head Back]
+
+>> SECOND TIME: “This wull mak' yer feelin' stoatin. See ya later. ”
+
+[Refuse]
+
+“GIT AWA’, scruffy-lookin’ body, dinnae come back! Wasting mah time, pumpin' bas .” 
+
+>>SECOND TIME: “YA HURdie, DINNAE RETURN ‘ERE!” *mumble* *mumble*.
+*/
+
+
+:: Farmer's Market {"position":"525,1200","size":"100,100"}
+Farmer's Market
+/*TODO
+Actions:
+Buy Bundle of Bananas (alternatively: Fresh Fruit) $10, 	Sat 9am - 3pm		(can be eaten 3 times)
+
+Random Events:
+Slip on a banana peel (5%)	-10hp
+*/
+<<if visited("Farmer's Market") < 2>>>
+	A woman with dark curly hair and darker skin watches you warily as you walk by. “Hello Love,” she calls out, 
+<<else>>
+	The woman sits and smiles at you,
+<</if>>
+<<nobr>>
+<span id="dialogue"> 
+“See anything you like?”
+<<if visited("Farmer's Market") < 2>>
+	Before you are rows of fresh fruit, priced $10.00 each.
+<<else>>
+	She asks.
+<</if>>
+</span>
+<</nobr>>
+
+<<link "Buy Artisan Soap Bar 🧼 (-$10 🪙)">>
+	<<UpdateStat "Money" "purchase" 10>>
+	<<if _purchaseSuccess>>
+		<<replace "#dialogue">>“Oh lovely, here you are dear.” She hands you the soap bar.<</replace>>
+		<<set $soap += 6>>
+	<<else>>
+		<<replace "#dialogue">>"Ah, thought so, you're short a bit. I'm here until 3pm if you want to run to a bank. Come again!"<</replace>>
+	<</if>>
+<</link>>
+<<link "Buy Banana 🍖 (-$10 🪙)">>
+	<<UpdateStat "Money" "purchase" 10>>
+	<<if _purchaseSuccess>>
+		<<replace "#dialogue">>“Oh lovely, here you are dear.” She hands you the banana. 
+
+		(Mmm. It's so fresh. 🍖.)<</replace>>
+		<<UpdateStat "Hunger" "eat">>
+	<<else>>
+		<<replace "#dialogue">>"Ah, thought so, you're short a bit. I'm here until 3pm if you want to run to a bank. Come again!"<</replace>>
+	<</if>>
+<</link>>
+
+<<link "Downtown">><<JumpLocation "Downtown" false 5>><</link>>
+
+/*[First Time] A woman with dark curly hair and darker skin watches you warily as you walk by. “Hello Love,” she calls out, “see anything you like?” Before you are rows of fresh fruit, priced $10.00 each.
+>> Buy Fruit?
+     
+     “Oh lovely, here you are dear.” She hands you a banana. 
+
+>> Maybe Next Time
+
+      “Ah, thought so. Come again!”
+
+[Rest of the times]
+
+The woman sits and smiles at you, “see anything you like?” She asks.
+
+>>  Buy
+
+“Here you are.” She hands you an apple.
+
+>> maybe Next time
+
+She sighs, “come again”.
+*/
+
+
+:: Casino {"position":"525,1325","size":"100,100"}
+Casino
+/*TODO
+Actions:
+Buy Lotto Ticket $2
+Gamble ($10, $100, or $1000), 1h(?)
+Order Wonton Soup $10, 20min		12pm - 6pm
+
+Random Events:
+Find Money (10% * 1/amount, 0 < amount < $100)
+Find Lotto Ticket (1%)
+*/
+<span id="dialogue"> </span>
+
+<<link "Order Wonton Soup 🍖 (-$10 🪙)">>
+	<<UpdateStat "Money" "purchase" 10>>
+	<<if _purchaseSuccess>>
+		<<UpdateStat "Time" 20>>
+		<<replace "#dialogue">>Your order will be ready shortly!⏳
+		
+		(Mmm. So good! 🍖.)		/*TODO: Better description */
+		<</replace>>
+		<<UpdateStat "Hunger" "eat">>
+	<<else>>
+		<<replace "#dialogue">>The bartender looks at you impatiently, "look, our wonton soup is a pretty good deal. If you can't afford this much then you might wanna take a break from the slots for a bit."<</replace>>
+	<</if>>
+<</link>>
+
+<<link "Downtown">><<JumpLocation "Downtown" false 30>><</link>>
+
+
+:: Stackler's Steak House {"position":"775,1325","size":"100,100"}
+Stackler's Steak House
+/*TODO
+Actions:
+Order Steak $100, 30min		4pm - 10pm every day
+Order Bread $20, 10min
+
+Random Events:
+Kind sould gives you food (10%, 4pm - 10pm)
+Host kicks you out (50% stink > 7, 4 - 10pm) -5hp		can also base the chance on money as well
+*/
+<span id="dialogue"> </span>
+
+<<link "Order Steak 🍖 (-$100 🪙)">>
+	<<UpdateStat "Money" "purchase" 100>>
+	<<if _purchaseSuccess>>
+		<<UpdateStat "Time" 30>>
+		<<replace "#dialogue">>Your order will be ready shortly!⏳
+		
+		(You assert dominance by ordering the most expensive dish in the city. The sweet taste of //cough// ==foolishness== superiority overshadows the bitterness of the expenditure 🍖.)
+		<</replace>>
+		<<UpdateStat "Hunger" "eat">>
+	<<else>>
+		<<replace "#dialogue">>The waiter eyes you up and down before crossing his arms and saying, "I'm sorry sir, but we will require you to pay the bill before we bring you your food. Apologies for the inconvenience." (Since you cannot pay, you have no choice but to leave.)<</replace>>
+	<</if>>
+<</link>>
+<<link "Order Bread 🍖 (-$20 🪙)">>
+	<<UpdateStat "Money" "purchase" 20>>
+	<<if _purchaseSuccess>>
+		<<UpdateStat "Time" 10>>
+		<<replace "#dialogue">>Your order will be ready shortly!⏳
+		
+		(''MMM BREAD!'' 🍖.)
+		<</replace>>
+		<<UpdateStat "Hunger" "eat">>
+	<<else>>
+		<<replace "#dialogue">>The waiter eyes you up and down before crossing his arms and saying, "I'm sorry sir, but we will require you to pay the bill before we bring you your food. Apologies for the inconvenience." (Since you cannot pay, you have no choice but to leave.)<</replace>>
+	<</if>>	
+<</link>>
+
+<<link "Sketchy Alley">><<JumpLocation "Sketchy Alley" false 5>><</link>>
+<<link "Downtown">><<JumpLocation "Downtown" false 5>><</link>>
+
+
+:: Convenience Store {"position":"600,950","size":"100,100"}
+Convenience Store
+/*TODO: Description
+Actions:
+Buy Garlic n' Stinky Cheese Wings $10
+Buy Soap bar $8
+Buy Camping knife $50
+Buy Lotto Ticket $5
+
+Random Events:
+Find Lotto Ticket (1%)
+*/
+
+The man at the counter looks you up and down, planting a saccharine smile on his face in the meanwhile. 
+
+<span id="dialogue">"What can I do for you today?" He says cheerily.</span>
+
+<<link "Buy Soap Bar 🧼 (-$8 🪙)">>
+	<<UpdateStat "Money" "purchase" 8>>
+	<<if _purchaseSuccess>>
+		<<replace "#dialogue">>Thank you for your purchase!<</replace>>
+		<<set $soap += 3>>
+	<<else>>
+		<<replace "#dialogue">>Uh... You're short a bit. Look, you don't really look like you can afford this right now, and I can't afford to give you this for free so...<</replace>>
+	<</if>>
+<</link>>
+<<link "Buy Garlic n' Stinky Cheese Wings 🍖 (-$10 🪙)">>
+	<<UpdateStat "Money" "purchase" 10>>
+	<<if _purchaseSuccess>>
+		<<replace "#dialogue">>Thank you for your purchase!
+	
+		(The odour is strong with these ones 🦨. You can't help but wonder if they're edible. Oh well, beggers can't be choosers, down the hatch 🍖.)
+		<</replace>>
+		<<UpdateStat "Hunger" "eat">>
+		<<UpdateStat "Stink" 2>>
+	<<else>>
+		<<replace "#dialogue">>Uh... You're short a bit. Look, you don't really look like you can afford this right now, and I can't afford to give you this for free so...<</replace>>
+	<</if>>
+<</link>>
+
+<<link "Home">><<JumpLocation "Home" false 5>><</link>>
+
+
+:: Hospital {"position":"525,1075","size":"100,100"}
+Hospital
+/*TODO
+Actions:
+Get Patched Up (cost: 10 * missing hp), uses whole day, fully heal
+*/
+<<link "Downtown">><<JumpLocation "Downtown" false 30>><</link>>
+
+
+:: Police Station {"position":"650,1325","size":"100,100"}
+Police Station
+/*TODO
+Action:
+Report Crime (does nothing) 5min
+*/
+<<link "Downtown">><<JumpLocation "Downtown" false 5>><</link>>
 
 
