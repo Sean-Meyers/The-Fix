@@ -13,6 +13,74 @@ TheFix
 
 
 :: Story JavaScript [script]
+let date = new Date("2021-01-31T07:00:00");
+
+function getDay()
+{
+	return new Intl.DateTimeFormat("en-US", {day: "numeric"}).format(date);
+}
+
+function getMonth()
+{
+	return new Intl.DateTimeFormat("en-US", {month: "long"}).format(date);
+}
+
+function getWeekDay()
+{
+	return new Intl.DateTimeFormat("en-US", {weekday: "long"}).format(date);
+}
+
+function getDateTime()
+{
+	return new Intl.DateTimeFormat("en-US",
+									{weekday: "long",
+									 month: "long",
+									 day: "numeric",
+									 hour: "numeric",
+									 minute: "numeric"}).format(date);
+}
+
+//function getTime() {}
+
+// If the day turned over after adding the specified amount of time, return true, else false.
+// If the day would be turned over, sets the time to 11:59pm instead.
+function addTime(minutes)
+{
+	let before = getDay();
+	date.setTime(date.getTime() + (minutes * 60000));
+	let passOut = getDay() > before;
+	if (passOut)
+	{
+		date.setHours(-1, 59, 0);
+	}
+	return passOut;
+}
+
+function nextDay()
+{
+	date.setHours(31, 0, 0);
+}
+
+
+Macro.add("AddTime",
+{
+	handler: function ()
+	{
+		try
+        {
+			if (addTime(this.args[0]))
+			{
+				$.wiki('<<goto "Pass Out">>');
+			}
+        }
+		catch(e)
+    	{
+    		return this.error(e.message);
+    	}
+    }
+});
+
+
 Macro.add('JumpLocation',
 {
   handler: function ()
@@ -20,19 +88,26 @@ Macro.add('JumpLocation',
   	try
   	{
 		let self = this;
+		variables().location = this.args[0];
     	if (this.args[1] === true)
         {
 			$(document).one(":passagestart", function (ev)
 			{              
 				// Start a new day
-				variables().day += 1;
-				variables().time = 7.0;
+				// variables().day += 1;
+				// variables().time = 7.0 + ((self.args[2])  ?  self.args[2]  :  0);
+				nextDay();
+				if (self.args[2])
+				{
+					addTime(self.args[2]);
+				}
 				variables().hunger += 1;
 				variables().stink += 1;
               
-				if (variables().day > 28)
+				// if (variables().day > 28)
+				if (getMonth() != 'February')
 				{
-            		if (variables().money > 5)
+            		if (variables().money > 5)	//FIXME: Don't forget to change the ending condition
             		{
 						$.wiki('<<goto "Good Ending">>');
             		}
@@ -45,33 +120,52 @@ Macro.add('JumpLocation',
             	{
 					$(ev.content).wiki("You haven't eaten in 5 days. If you keep this up you might die.\n");
 					variables().health -= variables().hunger;
-					healthCheck(ev.content);
             	}
 
-				switch(variables().day)
+				// switch(variables().day)
+				switch(getDay())
 				{
-					case 4:
+					case '4':
 						$.wiki('<<goto "Story Event 2">>');
 						break;
-					case 8:
+					case '8':
 						$.wiki('<<goto "Story Event 3">>');
 						break;
-					case 12:
+					case '12':
 						$.wiki('<<goto "Story Event 4">>');
 						break;
-					case 16:
+					case '16':
 						$.wiki('<<goto "Story Event 5">>');
 						break;
-					case 20:
+					case '20':
 						$.wiki('<<goto "Story Event 6">>');
 						break;
-					case 24:
+					case '24':
 						$.wiki('<<goto "Story Event 7">>');
 						break;
 					default:
 						break;
 				}
-              
+
+				let stolenMoney = 0;
+				let rng = random(100);
+				if (variables().location != "Home" && variables().location != "Hospital")
+				{	
+					if (rng > 30)
+					{
+						stolenMoney = random(0, Math.floor(variables().money / 2));
+					}
+				}
+				if (stolenMoney > 0)
+				{
+					loseMoney(stolenMoney);
+					$(ev.content).wiki("You dreamed that someone was rummaging through your pockets last night.\n");
+				}
+				// else		// DEBUG
+				// {
+				// 	console.log("rng: " + rng + " location: " + variables().location);
+				// }
+				healthCheck(ev.content);
 				wikiStats(ev.content);
 			});	
         }
@@ -79,12 +173,12 @@ Macro.add('JumpLocation',
         {
 			$(document).one(":passagestart", function (ev)
 			{
-				console.log(self.args);	//TODO: erase the debug statement?
-				variables().time += ((self.args[2])  ?  self.args[2]  :  1);
+				let passOut = ((self.args[2])  ?  addTime(self.args[2])  :  addTime(60));
+				healthCheck(ev.content);
 				wikiStats(ev.content);
-				if (variables().time > 24)	//currently set to 12am for testing purposes.
+				if (passOut)
                 {
-					$.wiki('<<goto "Fall Asleep">>');
+					$.wiki('<<goto "Pass Out">>');
                 }
             });
         }
@@ -115,14 +209,42 @@ Macro.add("CheckHealth",
 });
 
 
+Macro.add("PassOutHigh",
+{
+	handler: function ()
+	{
+		try
+        {
+			let stuff = passOutHigh(this.args[0], this.args[1]);	// 0: severity,  1: location
+			let sleepIn = stuff.pop();
+			let location = stuff.pop();
+			$(document).one(":passagestart", function (ev)
+			{
+				$(ev.content).wiki("Last night was wild. Not that you remember any of it...\n");
+				for (const message of stuff)
+				{
+					$(ev.content).wiki(message);
+				}
+				$(ev.content).wiki('<<link "Carry on...">><<JumpLocation ' + '"' + location + '"' + ' true ' + '"' + sleepIn + '"' + '>><</link>>');
+			});
+			$.wiki('<<goto "Pass Out High">>');
+        }
+		catch(e)
+    	{
+    		return this.error(e.message);
+    	}
+    }
+});
+
+
 function wikiStats(output)
 {
-	$(output).wiki("\nJanuary " + variables().day + ",	" + formatTime(variables().time) + "\n\n");
+	// $(output).wiki("\nFebruary " + variables().day + ",	" + formatTime(variables().time) + "\n\n");
+	$(output).wiki('\n' + getDateTime() + "\n\n");
 	$(output).wiki("Money: " + variables().money + "\n");
-	$(output).wiki("Health: " + variables().health + "\n");
-	$(output).wiki("Hunger: " + variables().hunger + "\n");
-	$(output).wiki("Stink: " + variables().stink + "\n");
-	$(output).wiki("Stress: " + variables().stress + "\n\n");
+	$(output).wiki("Health: " + variables().health + " / 100\n");
+	$(output).wiki("Hunger: " + variables().hunger + " day(s) worth of malnutrition\n");
+	$(output).wiki("Stink: " + variables().stink + " day(s) worth of uncleanliness\n");
 }
 
 
@@ -159,15 +281,97 @@ function formatTime(time)
 }
 
 
+function loseMoney(amount)
+{
+	if (variables().money < amount)
+	{
+		variables().money = 0;
+	} else
+	{
+		variables().money -= amount;
+	}
+}
+
+
+function passOutHigh(severity, location)
+{
+	let result = [];
+
+	// health
+	let injuries = Math.floor(random(75) * severity);
+	if (injuries > 50)
+	{	result.push("\nYou wake up in a hospital. Apparently you got hit by a car. They gave you complimentary basic treatment but, don't expect to walk away rosy on your budget. Also, you still have to pay for the ambulance. Sucks to be you.\n");
+		variables().money -= 500;	// If this puts your money below 0, it just means you have debt (may change this later if it makes the game too hard)
+	}
+	else if (injuries > 25)
+	{	result.push("\nYou wake up with bruises all over. You can barely move. What in the world happened last night?\n");
+	}
+	else if (injuries > 0)
+	{	result.push("\nYou wake up in rough shape. Just what in the world happened last night?\n");
+	}
+	variables().health -= injuries;
+	// If they would die due to their injuries, lets be nice and make it so they don't die.
+	// Well, they'll still die if they're starving though.
+	if (variables().health < 1)
+	{	variables().health = 1;
+	}
+
+	// location
+	if (injuries >= 50)
+	{	location = "Hospital"
+		result.push("\nMost wouldn't be impressed with hospital food, but it's better than what you normally have access to.\n");
+		variables().hunger = 0;
+		// TODO: If you decide to make high stink levels inflict damage, don't forget to make sure the player doesn't die from it after waking up in the hospital here.
+	}
+	else if (!location)
+	{	location = ["River", "Hospital", "Home", "Farmer's Market", "Downtown", "Sketchy Alley"][random(5)];	
+	}
+	else if (location == "default")
+	{	location = variables().location;
+	}
+	else
+	{	if (location != variables().location)
+		{	result.push("\nYou wake up in a strange place. You don't recall how you got here. You're not surprised though. It's nothing unusual for you.\n");
+		}
+	}
+
+	// hunger
+	if (injuries < 50)
+	{	let munchies = Math.floor(random(5) * severity);
+		result.push("\nYou wake up famished.\n");
+		variables().hunger += munchies;
+	}
+
+	// stink
+	let excretions = Math.floor(random(30) * severity);
+	if (excretions > 0)
+	{	if (excretions < 15)
+		{	result.push("\nYou wake up drenched in sweat.\n");
+		}
+		else
+		{	result.push("\nYou wake up smelling like a toilet.\n");
+		}
+	}
+	variables().stink += excretions;
+
+	result.push(location);
+
+	// time
+	// let sleepIn = randomFloat(3, 11) * severity;
+	let sleepIn = randomFloat(180, 660) * severity;
+	result.push(sleepIn);
+
+	return result;
+}
+
+
 :: Beginning Passage {"position":"799,99","size":"100,100"}
 <<audio bgm loop volume 0.5 play>>
-<<set $day to 1>>
 <<set $money to 0>>
 <<set $health to 100>>
-<<set $stress to 25>>
 <<set $hunger to 4>>
 <<set $stink to 7>>
-<<set $time to 7.0>>
+<<set $location to "Sketchy Alley">>
 
 The first thing you notice is that it’s cold—the type that sinks into your bones and replaces any lingering warmth that you might’ve retained from the tattered cloak that covers you. Next is the roughness of the concrete on the side of your face and on your hands as you hoist yourself up. 
 
@@ -417,8 +621,6 @@ yo, guys, there are some places in the actual story events (like story event 2 p
 /*TODO:
 Actions:
 Sleep	(Progress the current day)
-
-TODO: Make Passing out cause the day to start later, money to be lost
 */
 Home Shelter
 
@@ -426,13 +628,23 @@ It's nothing much but there's no place like it.
         
 In front of you lies your humble tent, hidden in the bushes of the park. Rags, bags and other paraphernalia lie strewn about, and the overall feel is quite dirty.
 
-<<link "River">><<JumpLocation "River" false 0.25>><</link>>
-<<link "Convenience Store">><<JumpLocation "Convenience Store" false 0.08>><</link>>
-<<link "Temp agency">><<JumpLocation "Temp Agency" false 1>><</link>>
-<<link "Downtown">><<JumpLocation "Downtown" false 0.5>><</link>>
+<<link "Go to sleep (ends day)">><<JumpLocation "Home" true>><</link>>
+
+<<link "Wait 6 hours (Debug)">><<JumpLocation "Home" false 360>><</link>>	/*TODO: Remove */
+<<link "Pass Out High (Debug)">><<PassOutHigh 0.5>><</link>>	/*TODO: Remove */
+<<link "Pass Out High Default Location (Debug)">><<PassOutHigh 0.5 "default">><</link>>	/*TODO: Remove */
+<<link "Pass Out High Downtown (Debug)">><<PassOutHigh 0.5 "Downtown">><</link>>	/*TODO: Remove */
+<<link "Pass Out High Casino (Debug)">><<PassOutHigh 0.5 "Casino">><</link>>	/*TODO: Remove */
+<<link "+$100 (Debug)">><<set $money += 100>><</link>>	/*TODO: Remove */
+
+<<link "River">><<JumpLocation "River" false 15>><</link>>
+<<link "Convenience Store">><<JumpLocation "Convenience Store" false 5>><</link>>
+<<link "Temp agency">><<JumpLocation "Temp Agency" false 60>><</link>>
+<<link "Downtown">><<JumpLocation "Downtown" false 30>><</link>>
 
 
 :: River {"position":"725,950","size":"100,100"}
+River
 /*TODO
 Actions:
 Wash Up (Uses 1 soap (each bar prolly has 3 usages))	//FIXME
@@ -442,11 +654,11 @@ Fall in River (1%) -75hp (you nearly drowned) (MAYBE)
 */
 <<linkreplace "Wash Up">>
 	<<set $stink to 0>>
-    <<set $time += 0.10>>
+    <<AddTime 15>>
 	You are all clean!    
 <</linkreplace>>
 
-<<link "Home.">><<JumpLocation "Home" false 0.25>><</link>>
+<<link "Home.">><<JumpLocation "Home" false 15>><</link>>
 
 
 :: Temp Agency {"position":"775,1075","size":"100,100"}
@@ -468,21 +680,43 @@ A place to find work.
 		<<link "Thanks!">><<JumpLocation "Home" true>><</link>>
 	<<else>>
     	"We're sorry, job openings close at 9 am, please try again tomorrow."
-        <<link "Okay.... (go home)">><<JumpLocation "Home" false 1>><</link>>
+        <<link "Okay.... (go home)">><<JumpLocation "Home" false 60>><</link>>
 	<</if>>
 <<else>>
 	"Gag. The smell..." *faints*
-	<<link "Home.">><<JumpLocation "Home" false 1>><</link>>
+	<<link "Home.">><<JumpLocation "Home" false 60>><</link>>
 <</if>>
 
-<<link "Home.">><<JumpLocation "Home" false 1>><</link>>
-<<link "Sketchy Alley">><<JumpLocation "Sketchy Alley" false 0.08>><</link>>
+<<link "Home.">><<JumpLocation "Home" false 60>><</link>>
+<<link "Sketchy Alley">><<JumpLocation "Sketchy Alley" false 5>><</link>>
 
 
-:: Fall Asleep {"position":"1100,1000","size":"100,100"}
-You find yourself involuntarily falling asleep due to how late it is.
+:: Pass Out {"position":"1100,1000","size":"100,100"}
+<<switch $location>>
+	<<case "Home" "Hospital">>
+		You find yourself involuntarily falling asleep due to how late it is.
+	<<case "Casino" "Police Station" "Convenience Store" "Temp Agency" "Stackler's Steak House">>
+		"...ey! ... can't sleep here! ..." 
 
-<<link "Yawn...">><<JumpLocation "Home" true>><</link>>
+		You are barely lucid. The blurry figures of two large men hoist you by the arms as you pass out. For a moment you feel the bite of cold outside air, and then next the harsh thump of concrete. As you close your eyes, your last muddled thoughts are "Ah, I hope I don't get frostbite."
+		<<set $health -= 5>>
+	<<default>>
+		You are barely lucid. It seems your body is bound and determined to shut down. Even the biting outside cold cannot stop it. As you close your eyes, your last muddled thoughts are "Ah, I hope I don't get frostbite."
+		<<set $health -= 5>>
+<</switch>>
+
+Waking up at a reasonable time is going to be a challenge.
+<<set _sleepIn to 0.0>>
+<<script>>
+	// temporary().sleepIn = randomFloat(0.5, 8.01);
+	temporary().sleepIn = random(30, 480);
+<</script>>
+
+<<link "...">><<JumpLocation $location true _sleepIn>><</link>>
+
+
+:: Pass Out High {"position":"1199,1000","size":"100,100"}
+/*Intentionally left blank (it gets filled in when javascript functions get called) DO NOT REMOVE!*/
 
 
 :: StoryInit {"position":"1199,124","size":"100,100"}
@@ -571,7 +805,7 @@ You blink once. Then twice, before yelping and launching the cat from your lap.
 
 It hisses angrily at you, and scuttles off. Hm, perhaps you imagined that.
 
-***Programmers, start the day with debuffs?
+<<link "...">><<PassOutHigh 0.25>><</link>>		/*TODO: Make the severity (currently 0.25) depend on choices in the dialogue, and/or a minigame. */
 
 
 :: Story Event 3 {"position":"2099,98","size":"100,100"}
@@ -655,6 +889,7 @@ not sure how to implement this one bois lots of if statements
 
 
 :: Downtown {"position":"651,1200","size":"100,100"}
+Downtown
 /*TODO
 Actions:
 Panhandle (2h)	10% chance to get $10
@@ -662,16 +897,17 @@ Panhandle (2h)	10% chance to get $10
 Random Events:
 Get pickpocketed (5%)
 */
-<<link "Sketchy Alley">><<JumpLocation "Sketchy Alley" false 0.08>><</link>>
-<<link "Stackler's Steak House">><<JumpLocation "Stackler's Steak House" false 0.08>><</link>>
-<<link "Police Station">><<JumpLocation "Police Station" false 0.08>><</link>>
-<<link "Farmer's Market">><<JumpLocation "Farmer's Market" false 0.08>><</link>>
-<<link "Hospital">><<JumpLocation "Hospital" false 0.5>><</link>>
-<<link "Casino">><<JumpLocation "Casino" false 0.5>><</link>>
-<<link "Home">><<JumpLocation "Home" false 0.5>><</link>>
+<<link "Sketchy Alley">><<JumpLocation "Sketchy Alley" false 5>><</link>>
+<<link "Stackler's Steak House">><<JumpLocation "Stackler's Steak House" false 5>><</link>>
+<<link "Police Station">><<JumpLocation "Police Station" false 5>><</link>>
+<<link "Farmer's Market">><<JumpLocation "Farmer's Market" false 5>><</link>>
+<<link "Hospital">><<JumpLocation "Hospital" false 30>><</link>>
+<<link "Casino">><<JumpLocation "Casino" false 30>><</link>>
+<<link "Home">><<JumpLocation "Home" false 30>><</link>>
 
 
 :: Sketchy Alley {"position":"775,1200","size":"100,100"}
+Sketchy Alley
 /*TODO
 Actions:
 Scavange Dumpster (20min, stink+21)		50% Chance to get food
@@ -680,9 +916,9 @@ Talk to dealer	(10min, only on wednesdays)		Sells black market items like Elixer
 Random Events:
 Get mugged (5% + 5% * hours past 6pm)
 */
-<<link "Stackler's Steak House">><<JumpLocation "Stackler's Steak House" false 0.08>><</link>>
-<<link "Temp Agency">><<JumpLocation "Temp Agency" false 0.08>><</link>>
-<<link "Downtown">><<JumpLocation "Downtown" false 0.08>><</link>>
+<<link "Stackler's Steak House">><<JumpLocation "Stackler's Steak House" false 5>><</link>>
+<<link "Temp Agency">><<JumpLocation "Temp Agency" false 5>><</link>>
+<<link "Downtown">><<JumpLocation "Downtown" false 5>><</link>>
 
 /* SKETCHY MAN
 As you enter the area, you find that there are a lot more people (who you’d define as “sketchy”) around the place. Your eyes wander, and you see all sorts of things on display for sale: guns, syringes, stolen goods (all at unfathomable prices), as well as some odd looking food. Unfortunately, as you are looking around, you make eye contact with a vendor. One of his eyes looks at you, silver and unblinking, whereas the other looks normal. It creeps you out a little bit. 
@@ -707,6 +943,7 @@ As you enter the area, you find that there are a lot more people (who you’d de
 
 
 :: Farmer's Market {"position":"525,1200","size":"100,100"}
+Farmer's Market
 /*TODO
 Actions:
 Buy Bundle of Bananas (alternatively: Fresh Fruit) $10, 	Sat 9am - 3pm		(can be eaten 3 times)
@@ -715,7 +952,7 @@ Buy Artsisan Soap Bar $5
 Random Events:
 Slip on a banana peel (5%)	-10hp
 */
-<<link "Downtown">><<JumpLocation "Downtown" false 0.08>><</link>>
+<<link "Downtown">><<JumpLocation "Downtown" false 5>><</link>>
 
 /*[First Time] A woman with dark curly hair and darker skin watches you warily as you walk by. “Hello Love,” she calls out, “see anything you like?” Before you are rows of fresh fruit, priced $10.00 each.
 >> Buy Fruit?
@@ -741,6 +978,7 @@ She sighs, “come again”.
 
 
 :: Casino {"position":"525,1325","size":"100,100"}
+Casino
 /*TODO
 Actions:
 Buy Lotto Ticket $2
@@ -751,10 +989,11 @@ Random Events:
 Find Money (10% * 1/amount, 0 < amount < $100)
 Find Lotto Ticket (1%)
 */
-<<link "Downtown">><<JumpLocation "Downtown" false 0.5>><</link>>
+<<link "Downtown">><<JumpLocation "Downtown" false 30>><</link>>
 
 
 :: Stackler's Steak House {"position":"775,1325","size":"100,100"}
+Stackler's Steak House
 /*TODO
 Actions:
 Order Steak $100, 30min		4pm - 10pm every day
@@ -764,11 +1003,12 @@ Random Events:
 Kind sould gives you food (10%, 4pm - 10pm)
 Host kicks you out (50% stink > 7, 4 - 10pm) -5hp
 */
-<<link "Sketchy Alley">><<JumpLocation "Sketchy Alley" false 0.08>><</link>>
-<<link "Downtown">><<JumpLocation "Downtown" false 0.08>><</link>>
+<<link "Sketchy Alley">><<JumpLocation "Sketchy Alley" false 5>><</link>>
+<<link "Downtown">><<JumpLocation "Downtown" false 5>><</link>>
 
 
 :: Convenience Store {"position":"600,950","size":"100,100"}
+Convenience Store
 /* The man at the counter looks you up and down, planting a saccharine  smile on his face in the meanwhile. "What can I do for you today?" He says cheerily.
 */
 
@@ -782,22 +1022,24 @@ Buy Lotto Ticket $5
 Random Events:
 Find Lotto Ticket (1%)
 */
-<<link "Home">><<JumpLocation "Home" false 0.08>><</link>>
+<<link "Home">><<JumpLocation "Home" false 5>><</link>>
 
 
 :: Hospital {"position":"525,1075","size":"100,100"}
+Hospital
 /*TODO
 Actions:
 Get Patched Up (cost: 10 * missing hp), uses whole day, fully heal
 */
-<<link "Downtown">><<JumpLocation "Downtown" false 0.5>><</link>>
+<<link "Downtown">><<JumpLocation "Downtown" false 30>><</link>>
 
 
 :: Police Station {"position":"650,1325","size":"100,100"}
+Police Station
 /*TODO
 Action:
 Report Crime (does nothing) 5min
 */
-<<link "Downtown">><<JumpLocation "Downtown" false 0.08>><</link>>
+<<link "Downtown">><<JumpLocation "Downtown" false 5>><</link>>
 
 
