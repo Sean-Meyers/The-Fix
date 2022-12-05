@@ -1,0 +1,89 @@
+#---Code---#
+Macro.add('flip',
+{
+    handler: function ()
+    {
+        try{
+           
+            var side = State.getVar("$headside");
+         
+
+            var bias = 1-(this.args[0]/100)
+           
+            var x = Math.random()
+
+            if (!side){
+                if(x>=bias){
+            $(this.output).wiki("It was Heads\n");
+                state.variables.win = false
+            }
+            else{
+                $(this.output).wiki("It was Tails\n");
+                state.variables.win = true
+            }
+            }
+           
+            if (side){
+                if(x>=bias){
+            $(this.output).wiki("It was Tails\n");
+                state.variables.win = false
+                }
+                else{
+                $(this.output).wiki("It was Heads\n");
+                state.variables.win = true
+                }
+            }
+        }
+        catch(e){
+            return this.error(e.message);
+        }
+    }
+
+
+});
+
+//########usage########//
+
+<<flip 0-100>> // enter value from 0-100 to influence bias 100 being the highest against the player
+ ////////////////////////////////////////////////
+
+#---passages---#
+
+Passage1
+
+Lets do a coin flip, what side do you want heads or tails?
+
+[[choose tails|tails]]
+
+[[choose heads|heads]]
+
+<<set $win to false>>
+
+Passage 2
+
+Tails? sure *reaches into pocket to grab a coin*
+
+<<set $headside to false>>
+
+<<flip 100>>
+
+[[flip|results]]
+
+Passage 3
+
+Heads? sure *reaches into pocket to grab a coin*
+
+<<set $headside to true>>
+
+<<flip 0>>
+
+[[flip|results]]
+
+Passage 4
+
+<<if $win is false>>
+Oh better luck next time you lose 10$
+<</if>>
+<<if $win is true>>
+nice you just won 3$
+<</if>>
