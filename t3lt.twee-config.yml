@@ -1,0 +1,11 @@
+sugarcube-2:
+  macros:
+    StartHangman:
+      name: StartHangman
+    mouseover:
+      name: mouseover
+      container: true
+    JumpLocation:
+      name: JumpLocation
+    onhover:
+      name: onhover

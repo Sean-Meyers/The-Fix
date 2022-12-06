@@ -61,6 +61,28 @@ function nextDay()
 	date.setHours(31, 0, 0);
 }
 
+function getHour()
+{
+	console.log(date.getHours())
+	return date.getHours();
+}
+
+
+Macro.add("GetHour",
+{
+	handler: function ()
+	{
+		try
+        {
+			$.wiki('<<set _hour to ' + getHour() + '>>');
+        }
+		catch(e)
+    	{
+    		return this.error(e.message);
+    	}
+    }
+});
+
 
 Macro.add("AddTime",
 {
@@ -137,9 +159,9 @@ Macro.add('JumpLocation',
 					case '16':
 						$.wiki('<<goto "Story Event 5">>');
 						break;
-					case '20':
-						$.wiki('<<goto "Story Event 6">>');
-						break;
+					// case '20':
+					// 	$.wiki('<<goto "Story Event 6">>');
+					// 	break;
 					case '24':
 						$.wiki('<<goto "Story Event 7">>');
 						break;
@@ -264,6 +286,10 @@ Macro.add("UpdateStat",
 
 						case 'debt':
 							variables().money -= this.args[2];
+							break;
+
+						case 'profit':
+							variables().money += this.args[2];
 							break;
 
 						default:
@@ -457,12 +483,15 @@ Macro.add('hangman',
                   	
                 }
             }
-			
           	
             hidden = wordArray.join("")
             State.variables.hidden=hidden
-          	
-			
+
+			// Check if the word was guessed correctly.
+			if (hidden.replaceAll(' ', '') == word)
+			{
+				variables().solved = true;
+			}        	
 			
             $(this.output).wiki(hidden+"\n");
           
@@ -489,7 +518,7 @@ Macro.add('hangman',
     <<set $message to "Cat">> // replace cat with what ever word
     <<set $hidden to "_ _ _">> // add however many underscores and lines the word needs
     <<set $letter to "">> // don not change this
-    <<set $sovled to false>> // do not change this
+    <<set $solved to false>> // do not change this
     <<set $tries to 3>> // set tries to however many tries you want to give
 
     -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -516,6 +545,42 @@ Macro.add('hangman',
     
 
 
+});
+
+
+Macro.add("StartHangman",
+{
+	handler: function ()
+	{
+		try
+        {
+			if (this.args[0])
+			{
+				variables().message = this.args[0];
+			}
+			else
+			{
+				// from https://www.hangmanwords.com/words
+				let wordChoices = ['abruptly','absurd','abyss','affix','askew','avenue','awkward','axiom','azure','bagpipes','bandwagon','banjo','bayou','beekeeper','bikini','blitz','blizzard','boggle','bookworm','boxcar','boxful','buckaroo','buffalo','buffoon','buxom','buzzard','buzzing','buzzwords','caliph','cobweb','cockiness','croquet','crypt','curacao','cycle','daiquiri','dirndl','disavow','dizzying','duplex','dwarves','embezzle','equip','espionage','euouae','exodus','faking','fishhook','fixable','fjord','flapjack','flopping','fluffiness','flyby','foxglove','frazzled','frizzled','fuchsia','funny','gabby','galaxy','galvanize','gazebo','giaour','gizmo','glowworm','glyph','gnarly','gnostic','gossip','grogginess','haiku','haphazard','hyphen','iatrogenic','icebox','injury','ivory','ivy','jackpot','jaundice','jawbreaker','jaywalk','jazziest','jazzy','jelly','jigsaw','jinx','jiujitsu','jockey','jogging','joking','jovial','joyful','juicy','jukebox','jumbo','kayak','kazoo','keyhole','khaki','kilobyte','kiosk','kitsch','kiwifruit','klutz','knapsack','larynx','lengths','lucky','luxury','lymph','marquis','matrix','megahertz','microwave','mnemonic','mystify','naphtha','nightclub','nowadays','numbskull','nymph','onyx','ovary','oxidize','oxygen','pajama','peekaboo','phlegm','pixel','pizazz','pneumonia','polka','pshaw','psyche','puppy','puzzling','quartz','queue','quips','quixotic','quiz','quizzes','quorum','razzmatazz','rhubarb','rhythm','rickshaw','schnapps','scratch','shiv','snazzy','sphinx','spritz','squawk','staff','strength','strengths','stretch','stronghold','stymied','subway','swivel','syndrome','thriftless','thumbscrew','topaz','transcript','transgress','transplant','triphthong','twelfth','twelfths','unknown','unworthy','unzip','uptown','vaporize','vixen','vodka','voodoo','vortex','voyeurism','walkway','waltz','wave','wavy','waxy','wellspring','wheezy','whiskey','whizzing','whomever','wimpy','witchcraft','wizard','woozy','wristwatch','wyvern','xylophone','yachtsman','yippee','yoked','youthful','yummy','zephyr','zigzag','zigzagging','zilch','zipper','zodiac','zombie'];
+				variables().message = wordChoices[random(wordChoices.length - 1)];
+			}
+			variables().wordLength = variables().message.length;
+			variables().hidden = '_ '.repeat(variables().wordLength).slice(0, -1);
+			variables().letter = "";
+			variables().solved = false;
+			variables().tries = Math.floor(variables().wordLength / 2);
+			//console.log(variables().wordLength, variables().hidden, variables().message, variables().tries);
+			if (variables().tries < 3)
+			{
+				variables().tries = 3;
+			}
+			$.wiki("<<goto Hangman>>");
+        }
+		catch(e)
+    	{
+    		return this.error(e.message);
+    	}
+    }
 });
 
 
@@ -693,11 +758,17 @@ Mouse hover for Audio
 <<audio storyBGM stop>>
 <<audio gameBGM loop volume 0.3 play>>
 <<set $soap to 0>>
-<<set $money to 0>>
+<<set $money to 8>>
 <<set $health to 100>>
 <<set $hunger to 4>>
 <<set $stink to 7>>
 <<set $location to "Sketchy Alley">>
+<<set $message to "Cat">> /* replace cat with what ever word*/
+<<set $hidden to "_ _ _">> /* add however many underscores and lines the word needs*/
+<<set $letter to "">> /* don not change this*/
+<<set $solved to false>> /* do not change this*/
+<<set $tries to 3>> /* set tries to however many tries you want to give*/
+<<set $wordLength to 3>>
 
 The first thing you notice is that it’s cold—the type that sinks into your bones and replaces any lingering warmth that you might’ve retained from the tattered cloak that covers you. Next is the roughness of the concrete on the side of your face and on your hands as you hoist yourself up. 
 
@@ -1010,12 +1081,14 @@ In front of you lies your humble tent, hidden in the bushes of the park. Rags, b
 <<mouseover>>
 <<link "Go to sleep (ends day)">><<JumpLocation "Home" true>><</link>>
 
-<<link "Wait 6 hours (Debug)">><<JumpLocation "Home" false 360>><</link>>	/*TODO: Remove */
-<<link "Pass Out High (Debug)">><<PassOutHigh 0.5>><</link>>	/*TODO: Remove */
-<<link "Pass Out High Default Location (Debug)">><<PassOutHigh 0.5 "default">><</link>>	/*TODO: Remove */
-<<link "Pass Out High Downtown (Debug)">><<PassOutHigh 0.5 "Downtown">><</link>>	/*TODO: Remove */
-<<link "Pass Out High Casino (Debug)">><<PassOutHigh 0.5 "Casino">><</link>>	/*TODO: Remove */
-<<link "+$100 (Debug)">><<set $money += 100>><</link>>	/*TODO: Remove */
+<<nobr>>
+/* <<link "Wait 6 hours (Debug)">><<JumpLocation "Home" false 360>><</link>>	TODO: Remove */
+/* <<link "Pass Out High (Debug)">><<PassOutHigh 0.5>><</link>>	TODO: Remove */
+/* <<link "Pass Out High Default Location (Debug)">><<PassOutHigh 0.5 "default">><</link>>	TODO: Remove */
+/* <<link "Pass Out High Downtown (Debug)">><<PassOutHigh 0.5 "Downtown">><</link>>	TODO: Remove */
+/* <<link "Pass Out High Casino (Debug)">><<PassOutHigh 0.5 "Casino">><</link>>	TODO: Remove */
+/* <<link "+$100 (Debug)">><<set $money += 100>><</link>>	TODO: Remove */
+<</nobr>>
 
 <<link "River">><<JumpLocation "River" false 15>><</link>>
 <<link "Convenience Store">><<JumpLocation "Convenience Store" false 5>><</link>>
@@ -1051,6 +1124,28 @@ Soap 🧼: $soap
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
+:: Hangman {"position":"875,1075","size":"100,100"}
+Try to guess this $wordLength letter word! 
+
+If you win you get $120, if you lose, nothing. The day will end regardless.
+
+    <<hangman>>
+
+    You have $tries tries remaining
+    <<textbox "$text" "" autofocus>> \
+    <<button "?">>
+    <<set $letter to $text>>
+    <<goto "Hangman">>
+    <</button>>
+
+    <<if $tries is 0>>
+    <<timed 0.00001s>><<JumpLocation "Home" true>> // name new to whatever is the next passage
+	<<elseif $solved>>
+		<<set $money += 120>>
+		<<JumpLocation "Home" true>>
+    <</if>>
+
+
 :: Temp Agency {"position":"775,1075","size":"100,100"}
 /*TODO
 Actions:
@@ -1064,25 +1159,22 @@ Temp Agency.
 
 A place to find work.
 
-<<if $stink <= 7>>
-	<<if $time <= 9>>
-		"Congratulations! You're our millionth prospective employee! Have $10"
-    	<<set $money += 10>>
-        <<mouseover>>
-		<<link "Thanks!">><<JumpLocation "Home" true>><</link>>
-		<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
-	<<else>>
-    	"We're sorry, job openings close at 9 am, please try again tomorrow."
-        <<mouseover>>
-        <<link "Okay.... (go home)">><<JumpLocation "Home" false 60>><</link>>
-		<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
-	<</if>>
-<<else>>
-	"Gag. The smell..." *faints*
-    <<mouseover>>
-	<<link "Home.">><<JumpLocation "Home" false 60>><</link>>
-    <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+<span id="dialogue">"We're sorry, job openings close at 9 am, please try again tomorrow."</span>
+
+
+<<GetHour>>
+<<if _hour < 9>>
+	<<done>><<replace "#dialogue">>Would like to apply for a job today? It lasts the whole day, and you may not get paid if the employer isn't satisfied with your performance.<</replace>><</done>>
+	<<mouseover>><<linkreplace "Apply! ⏳">>
+		<<if random($stink + 8) <= 5>>
+			<<replace "#dialogue">>"Congratulations! You have been accepted. You may start anytime you're ready.<</replace>>
+			<<mouseover>><<link "Begin! 🪙⏳">><<StartHangman>><</link>><<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+		<<else>>
+			<<replace "#dialogue">>We're sorry, the position has already been filled.<</replace>>
+		<</if>>
+	<</linkreplace>><<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 <</if>>
+
 
 <<mouseover>>
 <<link "Home.">><<JumpLocation "Home" false 60>><</link>>
