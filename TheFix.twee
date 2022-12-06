@@ -8,7 +8,7 @@ TheFix
 	"format": "SugarCube",
 	"format-version": "2.36.1",
 	"start": "Beginning Passage",
-	"zoom": 0.6
+	"zoom": 1
 }
 
 
@@ -780,7 +780,8 @@ As you stumble towards its end, you arrive near a low building. You can just rea
 
 You can’t help but notice as a woman walks into the building. She is dressed well: pearls, elbow length gloves, and a simple black dress. She walks in without interference. There doesn’t seem to be a check-in system. Your stomach growls once more.
 
-Your gaze falls towards the back of the building. Just beyond a dumpster are two figures cloaked in darkness. They begin to walk away quickly as you continue to approach the area. One of them hands the other a vile; your attention, however, focuses on the dumpster.
+Your gaze falls towards the back of the building. Just beyond a dumpster are two figures cloaked in darkness. They begin to walk away quickly as you continue to approach the area. One of them hands the other a small baggie filled with a fluffy pinkish beige powder; your attention, however, focuses on the dumpster.
+
 
 You could dig through it for some food. It would be a terrible experience, but surely you could find something to eat… right?
 <<mouseover>>
@@ -1233,31 +1234,33 @@ Waking up at a reasonable time is going to be a challenge.
 <<audio storyBGM stop>>
 <<audio cym volume 0.3 play>>
 <<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
-There’s a bottle in your hand. It’s glass cold against your palm as your stare at the pearlescent, glitter-filled liquid within. Temptation in all its glory.  
+There’s a syringe in your hand. Its glass cold against your palm as you stare at the pearlescent, glitter-filled liquid within. Temptation in all its glory.  
 
-There’s a phantom pain in your left knee, pulsing and burrowing into your bones - angrily tearing into the ligament. It isn’t physically real, you should know this, but, right now, it’s everything but fake. Right now, it’s real to you. 
+There’s a phantom pain in your left knee, pulsing and burrowing into your bones—angrily tearing into the ligament. It isn’t physically real, you should know this, but, right now, it’s everything but fake. Right now, it’s real to you. 
 
 There’s a stray black cat digging through the dustbins beside you. It seems like you both share the same predicament. It stops, as if sensing your musings, and runs off. You sigh as you lay your head against the brick wall you’re resting against. The distraction doesn’t last very long before another aching pain travels out from your knee. Damn your old injury.
 
-<<mouseover>>
-[[Take A Drink?]] /*Programmers, can a new take a drink button appear everytime they click it? */
 
-[[Don't Take A Drink]] /*Programmers, can this button not work?*/
+<<mouseover>>
+[[Inject Elixir?]] /*Programmers, can a new take a drink button appear everytime they click it? */
+
+<<linkreplace Don’t Inject Elixir>>The temptation is Irresistible...<</linkreplace>> /*Programmers, can this button not work?*/
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Take A Drink? {"position":"1601,299","size":"100,100"}
+:: Inject Elixir? {"position":"1601,299","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-You take a drink. It tastes like melted down peppermint-flavoured cotton candy. 
+You inject Elixir. The flavour of melted down peppermint-flavoured cotton candy graces your tongue.
 
 <<mouseover>>
-[[Wait.|Wait1]]
+[[Wait.|Wait0]]
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Don't Take A Drink {"position":"1801,99","size":"100,100"}
 <<audio confirm volume 0.3 play>>
 Double-click this passage to edit it.
+/*TODO: maybe delete*/
 
 
 :: Wait1 {"position":"1602,495","size":"100,100"}
@@ -1297,7 +1300,7 @@ There’s nothing here.
 
 At first.
 
-You can vaguely recall glimpses of a time encased in golden tones. A wistful memory perhaps. Something before the accident - before you were offered promises and lies coated in cotton candy and peppermint.
+You can vaguely recall glimpses of a time encased in golden tones. A wistful memory perhaps. Something before the accident—before you were offered promises and lies coated in stale cotton candy and bitter peppermint.
 
 <<mouseover>>
 [[...]]
@@ -1306,15 +1309,15 @@ You can vaguely recall glimpses of a time encased in golden tones. A wistful mem
 
 :: Get Up {"position":"1499,997","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-You struggle to your feet, carefully tucking the Elixir away in one of the inner parts of your cloak. As you stand, you can definitely feel it start to kick in. You feel rejuvenated, fresh, fantastic! Like you could do anything and everything. Better yet, your knee doesn’t hurt anymore. You hop around, feeling a little silly. It doesn’t matter, heck, you feel like you could fly!
+You struggle to your feet, carefully tucking Elixir away in one of the inner parts of your cloak. As you stand, you can definitely feel it start to kick in. You feel rejuvenated, fresh, fantastic! Like you could do anything and everything. Better yet, your knee doesn’t hurt anymore. You hop around, feeling a little silly. It doesn’t matter, heck, you feel like you could fly!
 
-You stumble forward, and as you do so, you trip a little bit. Over what, you ask? Nothing that you can see. You even stubbed your toe! Not that you could feel it right now - the pain (you can still feel your toes, don’t worry!)
+You stumble forward, and as you do so, you trip a little bit. Over what, you ask? Nothing that you can see. You even stubbed your toe! Not that you could feel it right now—the pain (you can still feel your toes, don’t worry!)
 
 Oh, look. The cat has returned. It looks at you curiously. To you, its fur looks particularly soft.
 
-You feel pleasantly light as you stagger towards the cat, hands reaching out. Nothing can touch you -  you’re the strongest person alive! Nothing can even try to stop—!!!
+You feel pleasantly light as you stagger towards the cat, hands reaching out. Nothing can touch you—you’re the strongest person alive! Nothing can even try to stop—!!!
 
-THUD
+``THUD``
 
 <<mouseover>>
 [[Give In]]
@@ -1345,10 +1348,18 @@ It hisses angrily at you, and scuttles off. Hm, perhaps you imagined that.
 <<audio storyBGM stop>>
 <<audio cym volume 0.3 play>>
 <<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
-Double-click this passage to edit it.
+While you are walking down an alley, you encounter an anaemic looking man wearing a tattered olive-green coat with an overgrown beard and wiry salt-and-pepper coloured hair trying to escape from his dishevelled trucker hat. You are distracted by his constant shivering and grimacing face which constantly disappears into his jacket when he periodically hunches over in pain. 
+
+You ask him if he’s fiending for some Elixir and he says “what, do you think I’m always like this”
+You laugh and tell him you’re feeling a bit unwell too and could really use a bit of Elixir, he tells you that he might know a guy if you really need some
+
+
+Do you really need some?
+
 
 <<mouseover>>
-<<link "Head back.">><<JumpLocation "Home" true>><</link>>
+[[yes]]
+[[no]]
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
@@ -1358,7 +1369,9 @@ Double-click this passage to edit it.
 <<audio storyBGM stop>>
 <<audio cym volume 0.3 play>>
 <<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
-Double-click this passage to edit it.
+Today you wake up suffering from awful withdrawal symptoms, your bones are aching, your skin feels as if it has been completely removed, leaving an extremely sensitive layer of raw flesh and everything that touches you HURTS IMMENSELY. The painful cold of the air assaults you when you stand up and go out looking for some elixir. You run into your friend from earlier, you ask him if he has any extra elixir to share and he <<if $pitched>>laughs and tells you that he is happy to share a little elixir with such a reliable friend<<else>>He looks at you with an annoyed look on his face before walking away
+You continue to feel incredibly terrible for the rest of the day /*TODO: withdrawal debuffs*/
+<</if>>
 
 <<mouseover>>
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
@@ -1371,7 +1384,21 @@ Double-click this passage to edit it.
 <<audio storyBGM stop>>
 <<audio cym volume 0.3 play>>
 <<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
-Double-click this passage to edit it.
+You find yourself among the scuzzier streets of the city as you go about your business today. Before you is a man sprawled out across the sidewalk. Bystanders traipse around awkwardly as they try to ignore him. As you approach, you notice that he is fully unconscious, this may be a golden opportunity for you to…
+
+Oh no, it appears this is our friend from earlier, he must be having a rough week.
+
+But, I mean, how would he even know you were here, he probably won’t remember his last name tomorrow.
+
+You’d probably be doing him a favour by relieving him of his Elixir, I mean, it seems like he can’t even handle it, he might hurt himself if he takes it again. Unfortunately, while you are stepping over him you notice that he has stopped breathing
+
+Should you still take his Elixir?
+
+<<mouseover>>
+[[Take Elixir]]
+[[No, just call for help]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
 
 <<mouseover>>
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
@@ -1386,30 +1413,33 @@ Double-click this passage to edit it.
 <<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
 
 <<mousehover>>
-[[Take Elixir]]
+Elixir washes over you as you take it immediately. You feel the soft sensation budding within your veins like delicate orchids, and a cool mentholated breeze of pollen erupts from this freshly planted flora. It spreads throughout your entire body, and you no longer feel any pain. You sit down, relaxed. 
 
-[[Leave the Elixir]]
+You turn to look at your so-called ‘friend’ and notice that he has stopped breathing. Now that you have stolen and injected yourself with his drugs, calling emergency services would be too risky. For a moment, you feel your stomach tighten from guilt.
+
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Take Elixir {"position":"2902,299","size":"100,100"}
+:: Take Elixir {"position":"2900,300","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-The Elixir washes over you as you take it. Cotton candy sprouts from your insides like fungus, and peppermints are the spores they release. They spread throughout your entire body, and you no longer feel any pain. You sit down, relaxed.
+Elixir washes over you as you take it immediately. You feel the soft sensation budding within your veins like delicate orchids, and a cool mentholated breeze of pollen erupts from this freshly planted flora. It spreads throughout your entire body, and you no longer feel any pain. You sit down, relaxed. 
+
+You turn to look at your so-called ‘friend’ and notice that he has stopped breathing. Now that you have stolen and injected yourself with his drugs, calling emergency services would be too risky. For a moment, you feel your stomach tighten from guilt.
 
 <<mouseover>>
 [[Wait.|Wait3]]
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Leave the Elixir {"position":"3102,297","size":"100,100"}
+:: Leave the Elixir {"position":"3100,300","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-You step away from the body resting in the dark alleyway, mentally restraining yourself. You won’t do it. Each step backwards hosts its own individual weight–thousands of tonnes of invisible force pushing against you. You’ll only make it so far. 
+You step away from the body resting in the dark alleyway. The police will be here soon anyways. It’s not worth it for you to stay here. Each step backwards hosts its own individual weight–thousands of tonnes of invisible guilt pushing against you. You’ll only make it so far. 
 
 Luck would have it, though, that as you walk backwards, slowly stepping into the sunlit streets of the neighbourhood, someone calls out to you. 
 
-“Hey!” The stranger calls out. You whip your head around, distracted for at least a moment. Recognition instantly flashes across your face as an old family friend hobbles over to you. 
+“Hey!” The stranger calls out. You whip your head around, distracted for at least a moment. Recognition instantly flashes across your face as your old uncle Warren hobbles over to you. He is dressed in a shiny perfectly-tailored suit that glistens under the bright fluorescent street lights. You haven’t seen him in years.
 
-“I haven’t seen you in ages! You–” he looks you up and down, “--would you like to catch up over coffee? Something warm perhaps?” He sounds old, worried.
+“I haven’t seen you in ages! You–” he looks you up and down, “—would you like to catch up over coffee? Something warm perhaps?” He talks and talks but doesn’t seem to be listening. 
 
 <<mouseover>>
 [[You know what? Sure, why not?]]
@@ -1420,7 +1450,7 @@ Luck would have it, though, that as you walk backwards, slowly stepping into the
 
 :: Wait3 {"position":"2902,499","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-You feel much better now. Warm and fuzzy and nice. 
+As the drug kicks in, you begin to feel much better now. Warm and fuzzy sensations overcome any emotional discomfort. 
 
 [[Wait.|Wait4]]
 
@@ -1434,23 +1464,23 @@ You glance down at the body beside you. You should probably call for some help, 
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Close Your Eyes {"position":"2902,797","size":"100,100"}
+:: Close Your Eyes {"position":"2900,800","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-You come to a few hours later, having fallen asleep. Your stomach is empty, and you feel cold. You feel goosebumps across your entire body as a shiver runs up your spine. There is still some Elixir left in the bottle. You sigh before stretching your neck and back and looking around. The body beside you is untouched and unmoving; you glance at it briefly before looking away. It winks at you. 
+You come to a few hours later, having fallen asleep. Your stomach is empty, and you feel cold. You feel goosebumps across your entire body as a shiver runs up your spine. There is still some Elixir left in the syringe. You sigh before stretching your neck and back and looking around. The body beside you is untouched and unmoving; you glance at it briefly before looking away. It winks at you. 
 
 Wait, hold on–
 
 You do a double take.
 
-The corpse on the ground is staring back at you– eyes wide open and pupils dilated. You place the Elixir down beside you to rub at your eyes. Surely they’re not open, right? No, no they’re definitely open. And as the loosened jaw of your recently deceased acquaintance starts to move, you cry out and scramble back to your feet. 
+The corpse on the ground is staring back at you–eyes wide open and pupils dilated. You place the syringe down beside you to rub at your eyes. Surely they’re not open, right? No, no they’re definitely open. And as the loosened jaw of your unconscious acquaintance starts to move, you cry out and scramble back to your feet. 
 
-It’s alive?! 
+He’s alive?! 
 
-It’s ALIVE!? 
+HE’s ALIVE!? 
 
-You think you see it start to blink and reach out towards you. Nothing else moves, but that’s enough for you. You dart out of the darkened alleyway–well, not before creeping forward to snatch the Elixir you placed down. You could swear it tried to crawl closer to you when you did.
+You think you see him blink; perhaps his finger twitched? Nothing else moves, but that’s enough for you. You dart out of the darkened alleyway–well, not before creeping forward to snatch the syringe you placed down. You could swear he moved his hand when you did.
 
-Anyways, it’s a good thing you got out of there before your (not-so)-zombie friend could turn you too, but it’s also a shame that you couldn’t hear the greeting of a familiar face down the road. Quite unfortunate.
+Anyways, it’s a good thing you got out of there before your (not-so)-zombie friend could turn you too, but it’s also a shame that you missed a chance to catch up with a familiar face down the road. Quite unfortunate.
 
 <<mouseover>>
 <<link "...">><<PassOutHigh 0.25>><</link>>
@@ -1460,7 +1490,9 @@ Anyways, it’s a good thing you got out of there before your (not-so)-zombie fr
 
 :: You know what? Sure, why not? {"position":"3025,600","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-You spend the rest of the day talking with an old friend. I wish you could see your heavy eyes lighten as he did. The coffee was nice. You two plan to do this more often. For now, though, it’s time for you to head back - it’s getting dark.
+You spend the rest of the day talking with your uncle Warren. The burden upon your shoulders lightens for a time. The coffee was nice—you two plan to do this more often. After you finish talking he writes down his phone number and tells you to call him if you need anything. 
+
+For now, though, it’s time for you to head back—it’s getting dark. It’s then that the shame hits you. You completely forgot about the guy in the alleyway… A few drops of elixir would have lifted that toxic weight of shame from your back, returning you to the comfortable arms of apathetic indifference. Maybe you should’ve taken it.
 
 <<mouseover>>
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
@@ -1469,7 +1501,8 @@ You spend the rest of the day talking with an old friend. I wish you could see y
 
 :: I’ve got something to... uh, do… maybe next time. {"position":"3150,600","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-The man visibly dims, frowning briefly. “Well, if you ever need me, I’m just off of 123 Purdue Lane. Perhaps we’ll pass each other again.” He hobbles past you, patting your shoulder in farewell. You stand there for a little bit, contemplating. But anyways! It’s about time to do… Well, whatever you were planning to do. Shall we?
+The man visibly dims, frowning briefly. “Well, if you ever need me, I’m just off of 123 Purdue Lane. Perhaps we’ll pass each other again.” He hobbles past you, patting your shoulder in farewell. You stand there for a little bit, contemplating. Afterwards, the shame hits you. You completely forgot about the guy in the alleyway… A few drops of elixir would have lifted that toxic weight of shame from your back, returning you to the comfortable arms of apathetic indifference. Maybe you should’ve taken it.  But anyways! It’s about time to do… Well, whatever you were planning to do. 
+Shall we?
 
 <<mouseover>>
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
@@ -1809,5 +1842,156 @@ Report Crime (does nothing) 5min
 <<mouseover>>
 <<link "Downtown">><<JumpLocation "Downtown" false 5>><</link>>
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
+
+:: Wait0 {"position":"1726,424","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+Briefly, you wonder where the cat went. 
+
+<<mouseover>>
+[[Wait.|Wait1]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
+
+:: yes {"position":"2100,225","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+he asks if you have anything to pitch on some elixir
+
+<<mouseover>>
+<<if $money > 100>>
+	<<set $pitched to true>>
+	<<linkreplace yes>>You tell him “Yeah, I have $money”
+    
+    He says “good Elixir is hard to find right now but I know a guy, the only thing is, his prices are a bit high
+    
+ <<linkreplace Well, I guess that’s okay>>*You hand him all of your money*
+He comes back an hour later holding two bag and hands you one which you quickly unwrap and taste, it tastes even better than you remember
+Should you take a small shot or inject the whole bag?
+
+[[Small Sip]]
+[[Whole Bag]]
+<</linkreplace>>
+    
+    <</linkreplace>>
+<<else>>
+He tells you to leave him alone and he quickly walks away
+<<set $pitched to false>>
+<<mouseover>>
+<<link "...">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+<</if>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
+
+:: no {"position":"2225,225","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+He laughs. You laugh with him.
+
+<<mouseover>>[[...|yes]]<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
+
+:: Whole Bag {"position":"2224,348","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+You place the entire bag into the cap of a water bottle, carefully mix it around, slowly pull the liquid into a lightly used syringe. You are immediately reunited with a familiar sensation of relief as your eyes become unbearably heavy, you close them for a moment and feel your body smoothly descending toward the ground. You feel the sweet caress of concrete as you begin to peacefully drift away into a tranquil state of relaxation.
+
+<<mouseover>>[[...|se3...1]]<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
+
+:: Small Sip {"position":"2100,350","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+You take a small dose, you drop it into the cap of a water bottle, mix it around, slowly pull the liquid it into a gently used syringe before quickly deciding to inject the entire bag, might as well enjoy yourself a bit, it's been a rough week.
+
+<<mouseover>>[[...|se3...1]]<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
+
+:: se3...1 {"position":"2100,475","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+You wake up in the morning feeling worse than before, as if you had nearly reached the summit of a long coveted achievement only to have your hopes dashed by a sprained ankle. You need to get some money, that is the only way that you can ever overcome this heartbreak.
+
+<<mouseover>>
+<<link "...">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
+
+:: Take his elixer {"position":"2700,225","size":"100,100"}
+
+
+:: No, just call for help {"position":"2575,225","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+You immediately run to a payphone and call 911, they keep you on the line and ask you wait at the scene
+
+<<mouseover>>
+[[wait on the line]]
+[[walk away]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
+
+:: wait on the line {"position":"2575,350","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+The police arrive before the ambulance and begin to approach you while pointing their searingly bright flashlights directly into your eyes.
+
+<<mouseover>>
+[[Run]]
+[[Talk to them]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
+
+:: walk away {"position":"2700,350","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+You hang up the phone and start walking back to your tent, on your way there you see a familiar face. 
+
+<<mouseover>>
+[[...|Leave the Elixir]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
+
+:: Run {"position":"2575,475","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+You run for a few steps before stumbling on a curb, you cascade downward until your face is stopped by the cold, rough pavement of a cracked sidewalk. The police lightly chuckle as they put you into handcuffs and inform you that you will also be charged with resisting arrest
+
+[[Oof|jail]]
+
+
+:: Talk to them {"position":"2700,475","size":"100,100"}
+They ask you for your name, address, and date of birth
+
+<<linkreplace lie>>You give the police a made up name and address which they call into the system for a record check using their loud, crackly walkie-talkies. A rumble comes through the speaker of the walkie-talkie and one of the officers informs you that they have found no record of you anywhere. They accuse you of lying and take you into custody for more questioning 
+
+You arrive at the police station and wait in a brightly lit room for hours on end before they drag you into a dark room with a lamp. They ask you for your information again
+<</linkreplace>>
+
+<<linkreplace Be honest>>You give the police your information, they explain that there are warrants out for your arrest because of public intoxication charges and ask you to put your hands behind your back
+
+[[Run]]
+[[Cooperate|jail]]
+<</linkreplace>>
+
+
+:: jail {"position":"2575,600","size":"100,100"}
+The police officers take you into custody where you are swiftly booked and photographed before a guard strip searches you, demands you put on a bright orange jump-suit with a number on it and removes the tight metal handcuffs from your wrists 
+
+Then he forces you into an 8’ x 10’ cell with concrete walls painted white and fluorescent lighting that reflects off the walls in a seeming attempt to blind you, this is not helped by the chrome seatless toilet that is placed perpendicular to the cold metal bed where you will be spending the next few day
+
+The guards walk up and inform you that you will not have a court date until 16 months from now due to the backlog of cases in the court system and as such you will be staying in the county jail for over a year just to have your day in court, that is, unless you have $10,000 to pay your bond.
+
+<span id="dialogue"></span>
+
+<<mouseover>>
+<<link "Pay the bond">>
+	<<UpdateStat "Money" "purchase" 10000>>
+	<<if _purchaseSuccess>>
+		<<replace "#dialogue">>Ahhh it must be nice to be home, I guess they were right, freedom isn’t free
+<</replace>>
+	<<else>>
+		<<replace "#dialogue">>kek<</replace>>
+	<</if>>
+<<audio confirm volume 0.3 play>>
+<</link>>
+
+[[Wait in jail|Jail Ending]]
+
+
+:: Jail Ending {"position":"2575,725","size":"100,100"}
+You walk into the county jail where you feel the pain of withdrawals creeping into your bones. After weeks of incomprehensible suffering you are offered free medical care, three extremely poor quality meals per day, and a warm place to sleep. The only downside is the likely inability to get a job for the next 10 years due to your criminal record, the constant presence of violence while incarcerated, and the dehumanisation you will endure from guards, inmates, politicians, and voters. You will also be living under constant surveillance within an electric panopticon of CCTV cameras while subject to mandatory backbreaking slavery, an intentional byproduct of the 13th amendment. This is why you probably should have saved up that $10,000.
 
 
