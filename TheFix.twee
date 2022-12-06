@@ -8,7 +8,7 @@ TheFix
 	"format": "SugarCube",
 	"format-version": "2.36.1",
 	"start": "Beginning Passage",
-	"zoom": 1
+	"zoom": 0.6
 }
 
 
@@ -613,9 +613,85 @@ Macro.add('flip',
 
 });
 
+/* --------------------------------------------------
+Mouse hover for Audio
+-----------------------------------------------------*/
+(function () {
+    // mouseover macro, v1.0.1, by chapel, for sugarcube 2
+
+    Macro.add('mouseover', {
+
+        tags: [
+            'onhover', 
+            'onmouseover', 
+            'onmousein', 
+            'onmouseenter',
+            'onmouseout'
+        ],
+
+        skipArgs: true,
+
+        handler: function () {
+
+            if (this.payload.length < 2) {
+                return this.error('No event tag used.');
+            }
+
+            var wiki = {
+                mouseover : [],
+                mousein : [],
+                mouseout : []
+            };
+
+            var $el = $(document.createElement('span'))
+                .addClass('macro-' + this.name)
+                .wiki(this.payload[0].contents)
+                .appendTo(this.output);
+
+            // iterate through the tags
+            this.payload.forEach( function (payload) {
+                switch (payload.name) {
+                    case 'onhover':
+                    case 'onmouseover':
+                        wiki.mouseover.push(payload.contents);
+                        break;
+                    case 'onmousein':
+                    case 'onmouseenter':
+                        wiki.mousein.push(payload.contents);
+                        break;
+                    case 'onmouseout':
+                        wiki.mouseout.push(payload.contents);
+                        break;
+                    default:
+                        return;
+                }
+            });
+
+            // attach appropriate events
+            if (wiki.mouseover.length) {
+                $el.on('mouseover', this.createShadowWrapper(function (ev) {
+                    $.wiki(wiki.mouseover.join(' '));
+                }));
+            }
+            if (wiki.mousein.length) {
+                $el.on('mouseenter', this.createShadowWrapper(function (ev) {
+                    $.wiki(wiki.mousein.join(' '));
+                }));
+            }
+            if (wiki.mouseout.length) {
+                $el.on('mouseout', this.createShadowWrapper(function (ev) {
+                    $.wiki(wiki.mouseout.join(' '));
+                }));
+            }
+        }
+    });
+}());
+
 
 :: Beginning Passage {"position":"799,99","size":"100,100"}
-<<audio bgm loop volume 0.5 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio gameBGM loop volume 0.3 play>>
 <<set $soap to 0>>
 <<set $money to 0>>
 <<set $health to 100>>
@@ -636,13 +712,22 @@ You can’t help but notice as a woman walks into the building. She is dressed w
 Your gaze falls towards the back of the building. Just beyond a dumpster are two figures cloaked in darkness. They begin to walk away quickly as you continue to approach the area. One of them hands the other a vile; your attention, however, focuses on the dumpster.
 
 You could dig through it for some food. It would be a terrible experience, but surely you could find something to eat… right?
+<<mouseover>>
 [[Go to the Dumpster.|Dumpster Visit I]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 But you could also go into the building and ask for a loaf of bread—or something, anything… surely they’d help.
+<<mouseover>>
 [[Go to Stackler's.|Restaurant]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Restaurant {"position":"876,248","size":"100,100"}
+:: Restaurant {"position":"875,250","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio cym volume 0.3 play>>
+<<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
 You go inside the building! Gingerly, you approach the entrance. Opening the door leaves you standing there in the midst of finery. Warm air embraces you and the smells from outside are a thousand times stronger. You walk in further—no one bothers you. Further once more—no one. You are now almost at a table already set with food. A nice warm meal awaits you. You walk closer and—
 
 “—Excuse me sir, I’m sorry but you are not allowed in here.” An accented voice interrupts you. The host—a large, aged man—who had just rounded the corner after seating the previous customer (a familiar lady wearing pearls) walks up to you and starts pushing you out the door. Instantly, you are back in the cold.
@@ -652,13 +737,18 @@ You have been here before, kicked out in the cold—so many times that you are n
 As you hobble away from the building, a couple also wearing fine clothes, walks right past you. Another customer for the host to welcome...
 
 You could go back in, steal some food, and be out before the host notices you there. 
+<<mouseover>>
 [[Return Inside.|Return to Restaurant]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 You could continue to walk away and scavenge in that dumpster you saw earlier.
+<<mouseover>>
 [[Return to the Dumpster|Dumpster Visit II]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Dumpster Visit II {"position":"1008,546","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 Well, it’s probably not worth it to go back in anyways. You look away from the building; instead, you make your way back to the dumpster you saw earlier. Your stomach growls once more. It wouldn’t hurt to look…
 
 <<set $stink += 21>>
@@ -688,11 +778,18 @@ Purdue Lane, 96 Roxi and co.
 
 Interesting… a job could be very beneficial to you if you were to land it. Perhaps you could try? On the other hand, would they even hire you? Is it even worth your time?
 
+<<mouseover>>
 [[>> I'm sure they'll hire me!|No Job]]
 [[>> It's not worth my time.|No Job]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Dumpster Visit I {"position":"574,549","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio cym volume 0.3 play>>
+<<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
 <<set $stink += 21>>
 
 You dig through the dumpster! The bitter smell of garbage now clings to you, but you managed to find some leftovers good enough to eat.
@@ -710,19 +807,24 @@ Purdue Lane, 96 Roxi and co.
 
 Interesting… a job could be very beneficial to you if you were to land it. Perhaps you could try? On the other hand, would they even hire you? Is it even worth your time?
 
+<<mouseover>>
 [[>> I'm sure they'll hire me!|No Job]]
 [[>> It's not worth my time.|No Job]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Return to Restaurant {"position":"800,398","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 You wait about half a minute before following after the couple. The host is gone from his usual station. Your gaze falls back to the warm meal on the table. The steak is practically off the frying pan, sizzling and steaming hot. There are guests all around, though, and there is no way that you wouldn’t be seen. You glance back at the door behind you.
 
+<<mouseover>>
 [[Steal the steak and RUN!|Steal]]
-
 [[Sneak towards the kitchen for scraps.|Stealth]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Steal {"position":"724,549","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 Regardless of the watchful eyes, you grab the steak and run! No one makes a move to stop you. They just go back to enjoying their own meals.
 
 <<set $hunger = 0>>
@@ -740,11 +842,14 @@ Purdue Lane, 96 Roxi and co.
 
 Interesting… a job could be very beneficial to you if you were to land it. Perhaps you could try? On the other hand, would they even hire you? Is it even worth your time?
 
+<<mouseover>>
 [[>> I'm sure they'll hire me!|Job]]
 [[>> It's not worth my time.|No Job]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Stealth {"position":"874,549","size":"100,100"}
+:: Stealth {"position":"875,550","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 With the eyes of wealthy patrons following your back, you sneak further in. The clashing and clinking of silverware hints that you’re sneaking in the right direction. You come to a door half ajar. As you peer into what you presume is the kitchen, you make eye contact with the host in the middle of reaching towards a garbage bag. He freezes, and his face reminds you of a tomato as he recognizes you. 
 
 “You! What are you doing here?? Out! OUT I SAY!”  He yells as he grabs a silver platter. The man then runs at you, and you have barely a second before—
@@ -766,11 +871,18 @@ Purdue Lane, 96 Roxi and co.
 
 Interesting… a job could be very beneficial to you if you were to land it. Perhaps you could try? On the other hand, would they even hire you? Is it even worth your time?
 
+<<mouseover>>
 [[>> I'm sure they'll hire me!|No Job]]
 [[>> It's not worth my time.|No Job]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Good Ending {"position":"1525,1875","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio cym volume 0.3 play>>
+<<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
 Congratulations, due to your painstaking efforts you somehow managed to save up enough to feed, cloth, clean, and shelter yourself while looking for a stable job. Now that you are not so stinky and unreliable looking, employers are less reluctant to dismiss you so easily. You are finally free from a life of poor hygiene, but otherwise, the rising cost of living has made the differences appear to be aesthetic at best.
 
 /*Congratulations, you managed to overcome your addiction! You are finally free from the world of fantasy that kept you sane and now you have the opportunity to experience the joys of being unhoused in a modern city instead of a medieval one. Unfortunately, the differences appear to be aesthetic at best.*/
@@ -779,6 +891,11 @@ Fin.
 
 
 :: Bad Ending {"position":"1775,1950","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio cym volume 0.3 play>>
+<<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
 You may not have the most fufilling or lavish lifestyle but...
 
 ...
@@ -794,12 +911,18 @@ Fin.
 
 
 :: Death {"position":"2025,1850","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio cym volume 0.3 play>>
+<<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
 Oh dear, you have died before the age of 51, you have been unable to survive for the average lifespan of an unhoused person in the United States
 
 Fin.
 
 
 :: No Job {"position":"599,799","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 /* Wrote some stuff for testing purposes, feel free to change.*/
 
 Did you think you would get a job smelling and looking like that? Tough luck.
@@ -814,10 +937,13 @@ Did you think you would get a job smelling and looking like that? Tough luck.
     Better head back to your shelter before something unfortunate happens.
 <</if>>
 
+<<mouseover>>
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Job {"position":"999,799","size":"100,100"}
+:: Job {"position":"1000,800","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 It seems the employers must have been quite desperate this time, since even you got hired.
 
 Well, it was only a temporary one day deal, but still, you have some money in your pocket now.
@@ -832,7 +958,9 @@ The posting was not making an understatement when it said "LABOUR INTENSIVE" tho
 
 (It's late, better head home)
 
+<<mouseover>>
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Notes {"position":"174,799","size":"100,100"}
@@ -868,12 +996,18 @@ yo, guys, there are some places in the actual story events (like story event 2 p
 
 
 :: Home {"position":"650,1075","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio cym volume 0.3 play>>
+<<timed 0.6s>><<audio gameBGM loop volume 0.3 play>><</timed>>
 Home Shelter
 
 It's nothing much but there's no place like it.
         
 In front of you lies your humble tent, hidden in the bushes of the park. Rags, bags and other paraphernalia lie strewn about, and the overall feel is quite dirty.
 
+<<mouseover>>
 <<link "Go to sleep (ends day)">><<JumpLocation "Home" true>><</link>>
 
 <<link "Wait 6 hours (Debug)">><<JumpLocation "Home" false 360>><</link>>	/*TODO: Remove */
@@ -887,9 +1021,11 @@ In front of you lies your humble tent, hidden in the bushes of the park. Rags, b
 <<link "Convenience Store">><<JumpLocation "Convenience Store" false 5>><</link>>
 <<link "Temp agency">><<JumpLocation "Temp Agency" false 60>><</link>>
 <<link "Downtown">><<JumpLocation "Downtown" false 30>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: River {"position":"725,950","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 River
 /*TODO: Description
 
@@ -898,6 +1034,7 @@ Fall in River (1%) -75hp (you nearly drowned) (MAYBE)
 */
 Soap 🧼: $soap
 
+<<mouseover>>
 <<linkreplace "Wash Up (-1 soap 🧼)">>
 	<<if $soap > 0>>	
 		<<UpdateStat "Stink" "wash">>
@@ -907,9 +1044,11 @@ Soap 🧼: $soap
 		The grime is just too sticky to get off without soap.
 	<</if>>
     <<UpdateStat "Time" 15>>
+<<audio confirm volume 0.3 play>>
 <</linkreplace>>
 
 <<link "Home.">><<JumpLocation "Home" false 15>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Temp Agency {"position":"775,1075","size":"100,100"}
@@ -920,6 +1059,7 @@ Apply For Day Job (50 - 7 * Stink % chance to land a job)	7am - 9am M-F
 // FIXME: Change it to how it should be.
 */
 
+<<audio confirm volume 0.3 play>>
 Temp Agency.
 
 A place to find work.
@@ -928,21 +1068,34 @@ A place to find work.
 	<<if $time <= 9>>
 		"Congratulations! You're our millionth prospective employee! Have $10"
     	<<set $money += 10>>
+        <<mouseover>>
 		<<link "Thanks!">><<JumpLocation "Home" true>><</link>>
+		<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 	<<else>>
     	"We're sorry, job openings close at 9 am, please try again tomorrow."
+        <<mouseover>>
         <<link "Okay.... (go home)">><<JumpLocation "Home" false 60>><</link>>
+		<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 	<</if>>
 <<else>>
 	"Gag. The smell..." *faints*
+    <<mouseover>>
 	<<link "Home.">><<JumpLocation "Home" false 60>><</link>>
+    <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 <</if>>
 
+<<mouseover>>
 <<link "Home.">><<JumpLocation "Home" false 60>><</link>>
 <<link "Sketchy Alley">><<JumpLocation "Sketchy Alley" false 5>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Pass Out {"position":"1100,1000","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio cym volume 0.3 play>>
+<<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
 <<switch $location>>
 	<<case "Home" "Hospital">>
 		You find yourself involuntarily falling asleep due to how late it is.
@@ -963,75 +1116,104 @@ Waking up at a reasonable time is going to be a challenge.
 	temporary().sleepIn = random(30, 480);
 <</script>>
 
+<<mouseover>>
 <<link "...">><<JumpLocation $location true _sleepIn>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Pass Out High {"position":"1199,1000","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 /*Intentionally left blank (it gets filled in when javascript functions get called) DO NOT REMOVE!*/
 
 
 :: StoryInit {"position":"1199,124","size":"100,100"}
 /* -- Audio stuff -- */
-<<cacheaudio "bgm" "audio/temp_bgm.wav">>
+<<cacheaudio "gameBGM" "audio/theme - game.wav">>
+<<cacheaudio "storyBGM" "audio/theme - story.wav">>
+<<cacheaudio "cym" "audio/reverse cymbal.wav">>
 <<cacheaudio "hover" "audio/hover.wav">>  
 <<cacheaudio "confirm" "audio/confirm.wav">>
 
 
 :: Story Event 2 {"position":"1600,100","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio cym volume 0.3 play>>
+<<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
 There’s a bottle in your hand. It’s glass cold against your palm as your stare at the pearlescent, glitter-filled liquid within. Temptation in all its glory.  
 
 There’s a phantom pain in your left knee, pulsing and burrowing into your bones - angrily tearing into the ligament. It isn’t physically real, you should know this, but, right now, it’s everything but fake. Right now, it’s real to you. 
 
 There’s a stray black cat digging through the dustbins beside you. It seems like you both share the same predicament. It stops, as if sensing your musings, and runs off. You sigh as you lay your head against the brick wall you’re resting against. The distraction doesn’t last very long before another aching pain travels out from your knee. Damn your old injury.
 
-[[Take A Drink?]] **Programmers, can a new take a drink button appear everytime they click it?
+<<mouseover>>
+[[Take A Drink?]] /*Programmers, can a new take a drink button appear everytime they click it? */
 
-[[Don't Take A Drink]] **Programmers, can this button not work?
+[[Don't Take A Drink]] /*Programmers, can this button not work?*/
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Take A Drink? {"position":"1601,299","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 You take a drink. It tastes like melted down peppermint-flavoured cotton candy. 
 
+<<mouseover>>
 [[Wait.|Wait1]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Don't Take A Drink {"position":"1801,99","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 Double-click this passage to edit it.
 
 
 :: Wait1 {"position":"1602,495","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 How long has it been?
 
+<<mouseover>>
 [[Wait.|Wait2]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Wait2 {"position":"1603,600","size":"100,100"}
+:: Wait2 {"position":"1600,600","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 You feel nice and comfortable and warm. It’s so relaxing, you could just shut your eyes here…
 
+<<mouseover>>
 [[Fight It]]
 
 [[Give In]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Fight It {"position":"1498,800","size":"100,100"}
+:: Fight It {"position":"1500,800","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 You feel your eyes start to close, and you fight it with all your might. Forcing open your eyes seems to give a little shock to your heart and a headache slowly starts forming behind them. Falling asleep here would do you no good.
 
+<<mouseover>>
 [[Get Up]]
 
 [[Give In]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Give In {"position":"1698,801","size":"100,100"}
+:: Give In {"position":"1700,800","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 There’s nothing here.
 
 At first.
 
 You can vaguely recall glimpses of a time encased in golden tones. A wistful memory perhaps. Something before the accident - before you were offered promises and lies coated in cotton candy and peppermint.
 
+<<mouseover>>
 [[...]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Get Up {"position":"1499,997","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 You struggle to your feet, carefully tucking the Elixir away in one of the inner parts of your cloak. As you stand, you can definitely feel it start to kick in. You feel rejuvenated, fresh, fantastic! Like you could do anything and everything. Better yet, your knee doesn’t hurt anymore. You hop around, feeling a little silly. It doesn’t matter, heck, you feel like you could fly!
 
 You stumble forward, and as you do so, you trip a little bit. Over what, you ask? Nothing that you can see. You even stubbed your toe! Not that you could feel it right now - the pain (you can still feel your toes, don’t worry!)
@@ -1042,10 +1224,13 @@ You feel pleasantly light as you stagger towards the cat, hands reaching out. No
 
 THUD
 
+<<mouseover>>
 [[Give In]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: ... {"position":"1700,1100","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 You come to slumped over, feeling as if ice is coursing through your veins. You can immediately tell that a couple of hours have passed. The taste of peppermint coats your tongue despite being out for about a half hour. Your skin is clammy and cold. You flex your hand - it feels weak and sluggish.
 
 There’s something else, though, something soft laying across our legs. You look up. The eyes of a black cat bores into your own. 
@@ -1056,40 +1241,76 @@ You blink once. Then twice, before yelping and launching the cat from your lap.
 
 It hisses angrily at you, and scuttles off. Hm, perhaps you imagined that.
 
-<<link "...">><<PassOutHigh 0.25>><</link>>		/*TODO: Make the severity (currently 0.25) depend on choices in the dialogue, and/or a minigame. */
+<<mouseover>>
+<<link "...">><<PassOutHigh 0.25>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+/*TODO: Make the severity (currently 0.25) depend on choices in the dialogue, and/or a minigame. */
 
 
 :: Story Event 3 {"position":"2099,98","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio cym volume 0.3 play>>
+<<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
 Double-click this passage to edit it.
 
+<<mouseover>>
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Story Event 4 {"position":"2401,99","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio cym volume 0.3 play>>
+<<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
 Double-click this passage to edit it.
 
+<<mouseover>>
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Story Event 5 {"position":"2702,100","size":"100,100"}
+:: Story Event 5 {"position":"2700,100","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio cym volume 0.3 play>>
+<<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
 Double-click this passage to edit it.
 
+<<mouseover>>
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Story Event 6 {"position":"3002,99","size":"100,100"}
+:: Story Event 6 {"position":"3000,100","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio cym volume 0.3 play>>
+<<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
+
+<<mousehover>>
 [[Take Elixir]]
 
 [[Leave the Elixir]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Take Elixir {"position":"2902,299","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 The Elixir washes over you as you take it. Cotton candy sprouts from your insides like fungus, and peppermints are the spores they release. They spread throughout your entire body, and you no longer feel any pain. You sit down, relaxed.
 
+<<mouseover>>
 [[Wait.|Wait3]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Leave the Elixir {"position":"3102,297","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 You step away from the body resting in the dark alleyway, mentally restraining yourself. You won’t do it. Each step backwards hosts its own individual weight–thousands of tonnes of invisible force pushing against you. You’ll only make it so far. 
 
 Luck would have it, though, that as you walk backwards, slowly stepping into the sunlit streets of the neighbourhood, someone calls out to you. 
@@ -1098,24 +1319,31 @@ Luck would have it, though, that as you walk backwards, slowly stepping into the
 
 “I haven’t seen you in ages! You–” he looks you up and down, “--would you like to catch up over coffee? Something warm perhaps?” He sounds old, worried.
 
+<<mouseover>>
 [[You know what? Sure, why not?]]
 
 [[I’ve got something to... uh, do… maybe next time.]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Wait3 {"position":"2902,499","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 You feel much better now. Warm and fuzzy and nice. 
 
 [[Wait.|Wait4]]
 
 
 :: Wait4 {"position":"2902,602","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 You glance down at the body beside you. You should probably call for some help, but you just feel so comfortable—and it has been a while. You look away, leaning the back of your head against the wall. Taking a moment to yourself. You breathe deeply.
 
+<<mouseover>>
 [[Close Your Eyes]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Close Your Eyes {"position":"2902,797","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 You come to a few hours later, having fallen asleep. Your stomach is empty, and you feel cold. You feel goosebumps across your entire body as a shiver runs up your spine. There is still some Elixir left in the bottle. You sigh before stretching your neck and back and looking around. The body beside you is untouched and unmoving; you glance at it briefly before looking away. It winks at you. 
 
 Wait, hold on–
@@ -1132,28 +1360,45 @@ You think you see it start to blink and reach out towards you. Nothing else move
 
 Anyways, it’s a good thing you got out of there before your (not-so)-zombie friend could turn you too, but it’s also a shame that you couldn’t hear the greeting of a familiar face down the road. Quite unfortunate.
 
-<<link "...">><<PassOutHigh 0.25>><</link>>		/*TODO: Make the severity (currently 0.25) depend on choices in the dialogue, and/or a minigame. */
+<<mouseover>>
+<<link "...">><<PassOutHigh 0.25>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+/*TODO: Make the severity (currently 0.25) depend on choices in the dialogue, and/or a minigame. */
 
 
-:: You know what? Sure, why not? {"position":"3035,607","size":"100,100"}
+:: You know what? Sure, why not? {"position":"3025,600","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 You spend the rest of the day talking with an old friend. I wish you could see your heavy eyes lighten as he did. The coffee was nice. You two plan to do this more often. For now, though, it’s time for you to head back - it’s getting dark.
 
+<<mouseover>>
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: I’ve got something to... uh, do… maybe next time. {"position":"3145,607","size":"100,100"}
+:: I’ve got something to... uh, do… maybe next time. {"position":"3150,600","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 The man visibly dims, frowning briefly. “Well, if you ever need me, I’m just off of 123 Purdue Lane. Perhaps we’ll pass each other again.” He hobbles past you, patting your shoulder in farewell. You stand there for a little bit, contemplating. But anyways! It’s about time to do… Well, whatever you were planning to do. Shall we?
 
+<<mouseover>>
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Story Event 7 {"position":"3300,101","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio cym volume 0.3 play>>
+<<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
 not sure how to implement this one bois lots of if statements
 
+<<mouseover>>
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Downtown {"position":"651,1200","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 Downtown
 /*TODO
 Actions:
@@ -1162,6 +1407,7 @@ Panhandle (2h)	10% chance to get $10
 Random Events:
 Get pickpocketed (5%)
 */
+<<mouseover>>
 <<link "Sketchy Alley">><<JumpLocation "Sketchy Alley" false 5>><</link>>
 <<link "Stackler's Steak House">><<JumpLocation "Stackler's Steak House" false 5>><</link>>
 <<link "Police Station">><<JumpLocation "Police Station" false 5>><</link>>
@@ -1169,9 +1415,11 @@ Get pickpocketed (5%)
 <<link "Hospital">><<JumpLocation "Hospital" false 30>><</link>>
 <<link "Casino">><<JumpLocation "Casino" false 30>><</link>>
 <<link "Home">><<JumpLocation "Home" false 30>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Sketchy Alley {"position":"775,1200","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 Sketchy Alley
 /*TODO
 Actions:
@@ -1182,6 +1430,7 @@ Get mugged (5% + 5% * hours past 6pm)
 */
 <span id="dialogue"> </span>
 
+<<mouseover>>
 <<link "Scavange Dumpster 🍖 (🦨)">>
 	<<replace "#dialogue">>You're as desperate as they come. Dignity is long beyond you as you rummage through unspeakable, unidentifyable organic matter in search of food.<</replace>>
 	<<UpdateStat "Stink" 21>>
@@ -1208,11 +1457,13 @@ Get mugged (5% + 5% * hours past 6pm)
 		The contents of the dumpster were so putrid that even the likes of you wouldn't eat it. Dejected, you walk away from the dumpster.
 		<</append>>
 	<</if>>
+<<audio confirm volume 0.3 play>>
 <</link>>
 
 <<link "Stackler's Steak House">><<JumpLocation "Stackler's Steak House" false 5>><</link>>
 <<link "Temp Agency">><<JumpLocation "Temp Agency" false 5>><</link>>
 <<link "Downtown">><<JumpLocation "Downtown" false 5>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 /* SKETCHY MAN
 As you enter the area, you find that there are a lot more people (who you’d define as “sketchy”) around the place. Your eyes wander, and you see all sorts of things on display for sale: guns, syringes, stolen goods (all at unfathomable prices), as well as some odd looking food. Unfortunately, as you are looking around, you make eye contact with a vendor. One of his eyes looks at you, silver and unblinking, whereas the other looks normal. It creeps you out a little bit. 
@@ -1237,6 +1488,7 @@ As you enter the area, you find that there are a lot more people (who you’d de
 
 
 :: Farmer's Market {"position":"525,1200","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 Farmer's Market
 /*TODO
 Actions:
@@ -1261,6 +1513,7 @@ Slip on a banana peel (5%)	-10hp
 </span>
 <</nobr>>
 
+<<mouseover>>
 <<link "Buy Artisan Soap Bar 🧼 (-$10 🪙)">>
 	<<UpdateStat "Money" "purchase" 10>>
 	<<if _purchaseSuccess>>
@@ -1269,6 +1522,7 @@ Slip on a banana peel (5%)	-10hp
 	<<else>>
 		<<replace "#dialogue">>"Ah, thought so, you're short a bit. I'm here until 3pm if you want to run to a bank. Come again!"<</replace>>
 	<</if>>
+<<audio confirm volume 0.3 play>>
 <</link>>
 <<link "Buy Banana 🍖 (-$10 🪙)">>
 	<<UpdateStat "Money" "purchase" 10>>
@@ -1280,9 +1534,11 @@ Slip on a banana peel (5%)	-10hp
 	<<else>>
 		<<replace "#dialogue">>"Ah, thought so, you're short a bit. I'm here until 3pm if you want to run to a bank. Come again!"<</replace>>
 	<</if>>
+<<audio confirm volume 0.3 play>>
 <</link>>
 
 <<link "Downtown">><<JumpLocation "Downtown" false 5>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 /*[First Time] A woman with dark curly hair and darker skin watches you warily as you walk by. “Hello Love,” she calls out, “see anything you like?” Before you are rows of fresh fruit, priced $10.00 each.
 >> Buy Fruit?
@@ -1308,6 +1564,7 @@ She sighs, “come again”.
 
 
 :: Casino {"position":"525,1325","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 Casino
 /*TODO
 Actions:
@@ -1321,6 +1578,7 @@ Find Lotto Ticket (1%)
 */
 <span id="dialogue"> </span>
 
+<<mouseover>>
 <<link "Order Wonton Soup 🍖 (-$10 🪙)">>
 	<<UpdateStat "Money" "purchase" 10>>
 	<<if _purchaseSuccess>>
@@ -1333,12 +1591,15 @@ Find Lotto Ticket (1%)
 	<<else>>
 		<<replace "#dialogue">>The bartender looks at you impatiently, "look, our wonton soup is a pretty good deal. If you can't afford this much then you might wanna take a break from the slots for a bit."<</replace>>
 	<</if>>
+<<audio confirm volume 0.3 play>>
 <</link>>
 
 <<link "Downtown">><<JumpLocation "Downtown" false 30>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Stackler's Steak House {"position":"775,1325","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 Stackler's Steak House
 /*TODO
 Actions:
@@ -1351,6 +1612,7 @@ Host kicks you out (50% stink > 7, 4 - 10pm) -5hp		can also base the chance on m
 */
 <span id="dialogue"> </span>
 
+<<mouseover>>
 <<link "Order Steak 🍖 (-$100 🪙)">>
 	<<UpdateStat "Money" "purchase" 100>>
 	<<if _purchaseSuccess>>
@@ -1363,6 +1625,7 @@ Host kicks you out (50% stink > 7, 4 - 10pm) -5hp		can also base the chance on m
 	<<else>>
 		<<replace "#dialogue">>The waiter eyes you up and down before crossing his arms and saying, "I'm sorry sir, but we will require you to pay the bill before we bring you your food. Apologies for the inconvenience." (Since you cannot pay, you have no choice but to leave.)<</replace>>
 	<</if>>
+<<audio confirm volume 0.3 play>>
 <</link>>
 <<link "Order Bread 🍖 (-$20 🪙)">>
 	<<UpdateStat "Money" "purchase" 20>>
@@ -1376,13 +1639,16 @@ Host kicks you out (50% stink > 7, 4 - 10pm) -5hp		can also base the chance on m
 	<<else>>
 		<<replace "#dialogue">>The waiter eyes you up and down before crossing his arms and saying, "I'm sorry sir, but we will require you to pay the bill before we bring you your food. Apologies for the inconvenience." (Since you cannot pay, you have no choice but to leave.)<</replace>>
 	<</if>>	
+<<audio confirm volume 0.3 play>>
 <</link>>
 
 <<link "Sketchy Alley">><<JumpLocation "Sketchy Alley" false 5>><</link>>
 <<link "Downtown">><<JumpLocation "Downtown" false 5>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Convenience Store {"position":"600,950","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 Convenience Store
 /*TODO: Description
 Actions:
@@ -1399,6 +1665,7 @@ The man at the counter looks you up and down, planting a saccharine smile on his
 
 <span id="dialogue">"What can I do for you today?" He says cheerily.</span>
 
+<<mouseover>>
 <<link "Buy Soap Bar 🧼 (-$8 🪙)">>
 	<<UpdateStat "Money" "purchase" 8>>
 	<<if _purchaseSuccess>>
@@ -1407,6 +1674,7 @@ The man at the counter looks you up and down, planting a saccharine smile on his
 	<<else>>
 		<<replace "#dialogue">>Uh... You're short a bit. Look, you don't really look like you can afford this right now, and I can't afford to give you this for free so...<</replace>>
 	<</if>>
+<<audio confirm volume 0.3 play>>
 <</link>>
 <<link "Buy Garlic n' Stinky Cheese Wings 🍖 (-$10 🪙)">>
 	<<UpdateStat "Money" "purchase" 10>>
@@ -1420,26 +1688,34 @@ The man at the counter looks you up and down, planting a saccharine smile on his
 	<<else>>
 		<<replace "#dialogue">>Uh... You're short a bit. Look, you don't really look like you can afford this right now, and I can't afford to give you this for free so...<</replace>>
 	<</if>>
+<<audio confirm volume 0.3 play>>
 <</link>>
 
 <<link "Home">><<JumpLocation "Home" false 5>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Hospital {"position":"525,1075","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 Hospital
 /*TODO
 Actions:
 Get Patched Up (cost: 10 * missing hp), uses whole day, fully heal
 */
+<<mouseover>>
 <<link "Downtown">><<JumpLocation "Downtown" false 30>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Police Station {"position":"650,1325","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 Police Station
 /*TODO
 Action:
 Report Crime (does nothing) 5min
 */
+<<mouseover>>
 <<link "Downtown">><<JumpLocation "Downtown" false 5>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
