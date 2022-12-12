@@ -1100,7 +1100,7 @@ In front of you lies your humble tent, hidden in the bushes of the park. Rags, b
 
 :: River {"position":"725,950","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-River
+The water sounds cold; nonetheless, it would be a good place to wash up. Its banks are muddy, so unless you place your coat down on the muddy ground, it’d be useless to clean your feet and actually get in the water, but you can wipe down everything else. It’s a peaceful place, and all you can hear is the running water, minus the cars in the background. The trees offer enough privacy for you to be comfortable.
 /*TODO: Description
 
 Random Events:
@@ -1147,7 +1147,7 @@ If you win you get $120, if you lose, nothing. The day will end regardless.
     <</if>>
 
 
-:: Temp Agency {"position":"775,1075","size":"100,100"}
+:: Temp Agency {"position":"765,1075","size":"100,100"}
 /*TODO
 Actions:
 Apply For Day Job (50 - 7 * Stink % chance to land a job)	7am - 9am M-F
@@ -1158,7 +1158,7 @@ Apply For Day Job (50 - 7 * Stink % chance to land a job)	7am - 9am M-F
 <<audio confirm volume 0.3 play>>
 Temp Agency.
 
-A place to find work.
+You walk into a clean building. All around you are people rushing around. Other than a few side eyes, no one pays you any mind. You walk up to the front counter.
 
 <span id="dialogue">"We're sorry, job openings close at 9 am, please try again tomorrow."</span>
 
@@ -1524,7 +1524,10 @@ not sure how to implement this one bois lots of if statements
 
 :: Downtown {"position":"651,1200","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-Downtown
+Downtown is a loud and sketchy place. Buildings tower over you menacingly. Equally devious are the multitude of dark alleyways along your route. You walk down the sidewalk - an innocuous citizen. 
+
+There is no need to worry, however, you aren't alone. Many people pass, paying you no mind.
+
 /*TODO
 Actions:
 Panhandle (2h)	10% chance to get $10
@@ -1545,7 +1548,28 @@ Get pickpocketed (5%)
 
 :: Sketchy Alley {"position":"775,1200","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-Sketchy Alley
+
+/* SKETCHY MAN
+As you enter the area, you find that there are a lot more people (who you’d define as “sketchy”) around the place. Your eyes wander, and you see all sorts of things on display for sale: guns, syringes, stolen goods (all at unfathomable prices), as well as some odd looking food. Unfortunately, as you are looking around, you make eye contact with a vendor. One of his eyes looks at you, silver and unblinking, whereas the other looks normal. It creeps you out a little bit. 
+
+“Whit dae yi'll waant,” he says gruffly, “wantae buy?” 
+
+>>SECOND TIME: “Och ye'r back. Noo whit dae yi'll waant? Didnae git enough lest time?”
+			
+[Buy Mysterious Looking Meat]
+
+“Buzz daein' business wi' ye, 'til neist time.” Having not a clue what he said, you head back with the funky looking meat you bought.
+[Head Back]
+
+>> SECOND TIME: “This wull mak' yer feelin' stoatin. See ya later. ”
+
+[Refuse]
+
+“GIT AWA’, scruffy-lookin’ body, dinnae come back! Wasting mah time, pumpin' bas .” 
+
+>>SECOND TIME: “YA HURdie, DINNAE RETURN ‘ERE!” *mumble* *mumble*.
+*/
+
 /*TODO
 Actions:
 Talk to dealer	(10min, only on wednesdays)		Sells black market items like Elixer, Pistol, Ammo, Mysterious Looking Meat
@@ -1589,27 +1613,6 @@ Get mugged (5% + 5% * hours past 6pm)
 <<link "Temp Agency">><<JumpLocation "Temp Agency" false 5>><</link>>
 <<link "Downtown">><<JumpLocation "Downtown" false 5>><</link>>
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
-
-/* SKETCHY MAN
-As you enter the area, you find that there are a lot more people (who you’d define as “sketchy”) around the place. Your eyes wander, and you see all sorts of things on display for sale: guns, syringes, stolen goods (all at unfathomable prices), as well as some odd looking food. Unfortunately, as you are looking around, you make eye contact with a vendor. One of his eyes looks at you, silver and unblinking, whereas the other looks normal. It creeps you out a little bit. 
-
-“Whit dae yi'll waant,” he says gruffly, “wantae buy?” 
-
->>SECOND TIME: “Och ye'r back. Noo whit dae yi'll waant? Didnae git enough lest time?”
-			
-[Buy Mysterious Looking Meat]
-
-“Buzz daein' business wi' ye, 'til neist time.” Having not a clue what he said, you head back with the funky looking meat you bought.
-[Head Back]
-
->> SECOND TIME: “This wull mak' yer feelin' stoatin. See ya later. ”
-
-[Refuse]
-
-“GIT AWA’, scruffy-lookin’ body, dinnae come back! Wasting mah time, pumpin' bas .” 
-
->>SECOND TIME: “YA HURdie, DINNAE RETURN ‘ERE!” *mumble* *mumble*.
-*/
 
 
 :: Farmer's Market {"position":"525,1200","size":"100,100"}
@@ -1690,7 +1693,8 @@ She sighs, “come again”.
 
 :: Casino {"position":"525,1325","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-Casino
+Oddly enough, this area smells like an old library. Full of sounds, lights, colours, and various chatter, you start feeling a little overwhelmed. Heck, there's even a mini-restaurant. There's a lot you can do here. What are you willing to do?
+
 /*TODO
 Actions:
 Buy Lotto Ticket $2
@@ -1723,9 +1727,10 @@ Find Lotto Ticket (1%)
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Stackler's Steak House {"position":"775,1325","size":"100,100"}
+:: Stackler's Steak House {"position":"776,1316","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-Stackler's Steak House
+You enter hesitantly. The last time you were here, things did not bode well for you. Thankfully, it seems that the large host isn't here... From what you can see, anyways. 
+
 /*TODO
 Actions:
 Order Steak $100, 30min		4pm - 10pm every day
@@ -1774,7 +1779,8 @@ Host kicks you out (50% stink > 7, 4 - 10pm) -5hp		can also base the chance on m
 
 :: Convenience Store {"position":"600,950","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-Convenience Store
+You walk up to a convenience store.The words on the neon sign above it are half lit up and half flickering. They really should fix that. There is no one inside--the place is practically empty except for an employee at the counter. The constant buzz of electricity fills the store.
+
 /*TODO: Description
 Actions:
 Buy Garlic n' Stinky Cheese Wings $10
@@ -1786,7 +1792,7 @@ Random Events:
 Find Lotto Ticket (1%)
 */
 
-The man at the counter looks you up and down, planting a saccharine smile on his face in the meanwhile. 
+The employee looks you up and down, planting a saccharine smile on his face.
 
 <span id="dialogue">"What can I do for you today?" He says cheerily.</span>
 
@@ -1820,9 +1826,10 @@ The man at the counter looks you up and down, planting a saccharine smile on his
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Hospital {"position":"525,1075","size":"100,100"}
+:: Hospital {"position":"526,1075","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-Hospital
+The smell of disinfectant fills your nostrils. Hospitals don't hold the best of memories for you. Flashbacks meld the feelings of a work injury and the Elixir. You grimace. Still, this is the best place for you to heal up, even if it costs a fortune (to you). 
+
 /*TODO
 Actions:
 Get Patched Up (cost: 10 * missing hp), uses whole day, fully heal
@@ -1832,7 +1839,7 @@ Get Patched Up (cost: 10 * missing hp), uses whole day, fully heal
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Police Station {"position":"650,1325","size":"100,100"}
+:: Police Station {"position":"644,1464","size":"100,100"}
 <<audio confirm volume 0.3 play>>
 Police Station
 /*TODO
