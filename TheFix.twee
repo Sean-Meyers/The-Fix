@@ -1366,7 +1366,7 @@ It hisses angrily at you, and scuttles off. Hm, perhaps you imagined that.
 /*TODO: Make the severity (currently 0.25) depend on choices in the dialogue, and/or a minigame. */
 
 
-:: Story Event 3 {"position":"2099,98","size":"100,100"}
+:: Story Event 3 {"position":"2100,100","size":"100,100"}
 <<audio confirm volume 0.3 play>>
 <<audio gameBGM stop>>
 <<audio storyBGM stop>>
@@ -1436,16 +1436,14 @@ Should you still take his Elixir?
 <<audio cym volume 0.3 play>>
 <<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
 
-<<mousehover>>
 Elixir washes over you as you take it immediately. You feel the soft sensation budding within your veins like delicate orchids, and a cool mentholated breeze of pollen erupts from this freshly planted flora. It spreads throughout your entire body, and you no longer feel any pain. You sit down, relaxed. 
 
 You turn to look at your so-called ‘friend’ and notice that he has stopped breathing. Now that you have stolen and injected yourself with his drugs, calling emergency services would be too risky. For a moment, you feel your stomach tighten from guilt.
 
-<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
-
-:: Take Elixir {"position":"2900,300","size":"100,100"}
+:: Take Elixir {"position":"2825,225","size":"100,100"}
 <<audio confirm volume 0.3 play>>
+<<set $drug to 1>>
 Elixir washes over you as you take it immediately. You feel the soft sensation budding within your veins like delicate orchids, and a cool mentholated breeze of pollen erupts from this freshly planted flora. It spreads throughout your entire body, and you no longer feel any pain. You sit down, relaxed. 
 
 You turn to look at your so-called ‘friend’ and notice that he has stopped breathing. Now that you have stolen and injected yourself with his drugs, calling emergency services would be too risky. For a moment, you feel your stomach tighten from guilt.
@@ -1476,7 +1474,9 @@ Luck would have it, though, that as you walk backwards, slowly stepping into the
 <<audio confirm volume 0.3 play>>
 As the drug kicks in, you begin to feel much better now. Warm and fuzzy sensations overcome any emotional discomfort. 
 
+<<mouseover>>
 [[Wait.|Wait4]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Wait4 {"position":"2902,602","size":"100,100"}
@@ -1533,17 +1533,63 @@ Shall we?
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Story Event 7 {"position":"3300,101","size":"100,100"}
+:: Story Event 7 {"position":"3475,100","size":"100,100"}
 <<audio confirm volume 0.3 play>>
 <<audio gameBGM stop>>
 <<audio storyBGM stop>>
 <<audio cym volume 0.3 play>>
 <<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
-not sure how to implement this one bois lots of if statements
+<<set $drug to 1>>
+<<set $hunger to 20>>
+<<if $drug is 1>>
+The first thing you notice is that it’s cold—the type that sinks into your bones and replaces all lingering warmth from staying in the same position all night. Next is the roughness of the concrete on the side of your face and on your hands as you hoist yourself up. 
+
+Dawn has just blinked away the remnants of sleep. If the rumbling of your stomach has anything to say about it, you can guess that you’ve been asleep for quite some time. You are famished. You spare a glance at a nearly empty syringe on the ground and pick it up quickly.
+
+Looking around, you notice that you are back at the dead end of the empty and dimly lit alleyway. Dirt, dust, and trash surround you. All things considered, it’s still fairly clean. You slowly and clumsily make your way out of the alley, shaking away the fatigue.
+
+	<<if $hunger > 15>>
+In no time at all, you find yourself stumbling along Purdue Lane. You look at the syringe in your hand—there’s not much left—thinking that it may be best to save as much as you can. You do feel awfully hungry though, so maybe you can find something to eat. It gnaws at your insides.
 
 <<mouseover>>
-<<link "Head back.">><<JumpLocation "Home" true>><</link>>
+[[look through the trash]]
+[[Leave, Try Somewhere Else]]
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+    <<else>>
+In no time at all, you find yourself stumbling along Purdue Lane. You look at the syringe in your hand—there’s not much left—thinking that it may be best to save as much as you can–
+
+crUNCH!
+
+Someone accidentally hit your shoulder, causing you to drop the syringe. It shatters on impact with the ground. You feel the heat rise to your face. What do you do?
+
+<<mouseover>>
+[[Yell At the Person]]
+[[Stay Silent]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+    <</if>>
+
+<<else>>
+The first thing you notice is that it’s cold—the type that sinks into your bones and replaces any lingering warmth from your cloak. Next is the roughness of the concrete on the side of your face and on your hands as you hoist yourself up. 
+
+Dawn has just blinked away the remnants of sleep. If the dryness of your mouth has anything to say about it, you can guess that you’ve been asleep for quite some time. You don’t feel particularly well.
+
+Looking around, you notice that you are back at the dead end of the empty and dimly lit alleyway. Dirt, dust, and trash surround you. All things considered, it’s still fairly clean. You pull yourself up, slowly and clumsily making your way out of the alley, shaking away the fatigue.
+
+	<<if $hunger > 15>>
+Your stomach growls after the employer recognizes you and chats 
+    <<else>>
+You have a lovely chat with the employer.
+    <</if>>
+    
+In no time at all, you find yourself stumbling along Purdue Lane. There doesn’t seem to be many people around, good thing too, because it’s more peaceful this way. You do feel awfully hungry though; your stomach growls in protest. You pat it.
+
+As your attention is distracted, someone bumps into you, and you fall to the ground. You don’t particularly have enough energy to be mad, so you just brush it off. The person profusely apologises to you, offering a hand to help you up, but is interrupted by a particularly loud rumble from your tummy.  “Can I get you something? Think of it as an apology gift.” They ask.
+
+<<mouseover>>
+[[Sure, Why Not]]
+[[Nah, I'll be alright]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+<</if>>
 
 
 :: Downtown {"position":"651,1200","size":"100,100"}
@@ -1944,6 +1990,7 @@ You wake up in the morning feeling worse than before, as if you had nearly reach
 
 :: No, just call for help {"position":"2575,225","size":"100,100"}
 <<audio confirm volume 0.3 play>>
+<<set $drug to 0>>
 You immediately run to a payphone and call 911, they keep you on the line and ask you wait at the scene
 
 <<mouseover>>
@@ -1975,12 +2022,15 @@ You hang up the phone and start walking back to your tent, on your way there you
 <<audio confirm volume 0.3 play>>
 You run for a few steps before stumbling on a curb, you cascade downward until your face is stopped by the cold, rough pavement of a cracked sidewalk. The police lightly chuckle as they put you into handcuffs and inform you that you will also be charged with resisting arrest
 
+<<mouseover>>
 [[Oof|jail]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Talk to them {"position":"2700,475","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 They ask you for your name, address, and date of birth
-
+<<mouseover>>
 <<linkreplace lie>>You give the police a made up name and address which they call into the system for a record check using their loud, crackly walkie-talkies. A rumble comes through the speaker of the walkie-talkie and one of the officers informs you that they have found no record of you anywhere. They accuse you of lying and take you into custody for more questioning 
 
 You arrive at the police station and wait in a brightly lit room for hours on end before they drag you into a dark room with a lamp. They ask you for your information again
@@ -1991,9 +2041,11 @@ You arrive at the police station and wait in a brightly lit room for hours on en
 [[Run]]
 [[Cooperate|jail]]
 <</linkreplace>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: jail {"position":"2575,600","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 The police officers take you into custody where you are swiftly booked and photographed before a guard strip searches you, demands you put on a bright orange jump-suit with a number on it and removes the tight metal handcuffs from your wrists 
 
 Then he forces you into an 8’ x 10’ cell with concrete walls painted white and fluorescent lighting that reflects off the walls in a seeming attempt to blind you, this is not helped by the chrome seatless toilet that is placed perpendicular to the cold metal bed where you will be spending the next few day
@@ -2006,18 +2058,21 @@ The guards walk up and inform you that you will not have a court date until 16 m
 <<link "Pay the bond">>
 	<<UpdateStat "Money" "purchase" 10000>>
 	<<if _purchaseSuccess>>
+    	<<audio confirm volume 0.3 play>>
 		<<replace "#dialogue">>Ahhh it must be nice to be home, I guess they were right, freedom isn’t free
 <</replace>>
 	<<else>>
+    	<<audio confirm volume 0.3 play>>
 		<<replace "#dialogue">>kek<</replace>>
 	<</if>>
-<<audio confirm volume 0.3 play>>
 <</link>>
 
 [[Wait in jail|Jail Ending]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Jail Ending {"position":"2575,725","size":"100,100"}
+<<audio confirm volume 0.3 play>>
 You walk into the county jail where you feel the pain of withdrawals creeping into your bones. After weeks of incomprehensible suffering you are offered free medical care, three extremely poor quality meals per day, and a warm place to sleep. The only downside is the likely inability to get a job for the next 10 years due to your criminal record, the constant presence of violence while incarcerated, and the dehumanisation you will endure from guards, inmates, politicians, and voters. You will also be living under constant surveillance within an electric panopticon of CCTV cameras while subject to mandatory backbreaking slavery, an intentional byproduct of the 13th amendment. This is why you probably should have saved up that $10,000.
 
 
@@ -2072,5 +2127,74 @@ Congratulations you won 15$
 
 <<link "Play Again">><<JumpLocation "Roulette" false 10>><</link>>
 <<link "Stop Playing">><<JumpLocation "Casino" false 5>><</link>>
+
+
+:: look through the trash {"position":"3900,300","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+You do manage to find something! A perfectly fine bunch of packaged apples presents itself to you. Some of them are bruised, but overall, a great find. Grocery stores these days love throwing out good food. Tsk, Tsk.  You do notice that as you were digging through that someone scoffed as they passed, wrinkling their nose at you before walking away fast. 
+
+…
+
+People these days.
+
+
+:: Yell At the Person {"position":"3300,300","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+You turn around and start shouting at the person. He shrinks back briefly before becoming indignant, “Look, I’m sorry—” they start, but you interrupt them, beginning another tirade. They rub their forehead angrily. “Listen, I get that you’re mad, but I have a meeting really soon—that I can’t be late to. I—I’m really sorry about that, so I have to go. Sorry.” And the person makes a quick escape, leaving you dumbfounded.
+
+<<mouseover>>
+<<linkreplace Clean up the mess>>
+You cut your finger, swearing profusely—hopefully it doesn’t get infected.
+<</linkreplace>>
+
+<<link "Leave">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
+
+:: Leave, Try Somewhere Else {"position":"4000,300","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+You nearly bump into someone while speeding away. You apologise quickly and take off, not allowing the person a moment to speak. Oh well.
+
+
+:: Stay Silent {"position":"3400,300","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+You stay silent then, staring at the remnants of Elixir now leaching into the ground. At least there wasn’t too much left…  right? You don’t look at the person as they start to speak. “Hey, I’m so sorry about that—can I get you something? Food? Drink? Something I can do?” You look at them briefly. They look well dressed—business casual—carrying a briefcase. An employee then. 
+
+<<mouseover>>
+[[Accept]]
+[[Refuse]]
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
+
+:: Sure, Why Not {"position":"3700,300","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+You nod, and they continue pulling you up to your feet. The person walks with you to the nearest convenience store. Your conversation is short, with some awkward pauses sprinkled in between, but the person still forms a decent opinion of you in the end. They let you take a pick of whatever you want. 
+
+Before you part ways, the person offers to put in a good word for you at their workplace. They work at Pharma, a local plant store just off of Purdue Lane. They call themself Jesse.
+
+
+:: Nah, I'll be alright {"position":"3600,300","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+The person nods and pulls you back up to your feet. They introduce themself as Jesse, and that they work at Pharma, a local plant store just off of Purdue Lane. They invite you to stop by—they’re always looking for help. Maybe you’ll meet them again some day.
+
+
+:: Accept {"position":"3350,425","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+The person walks with you to the nearest convenience store. Your conversation is short, with some awkward pauses sprinkled in between, but the person still forms a decent opinion of you in the end. They let you take a pick of whatever you want. 
+
+Before you part ways, the person offers to put in a good word for you at their workplace. They work at Pharma, a local plant store just off of Purdue Lane. They call themself Jesse. 
+
+<<mouseover>>
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
+
+:: Refuse {"position":"3462.5,425","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+You shake your head, and the person stands there awkwardly—wanting to help but not knowing how. Soon enough, they leave to go wherever they were heading before. You sigh, rage dying down to a slow simmer. It’s time to head back.
+
+<<mouseover>>
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
