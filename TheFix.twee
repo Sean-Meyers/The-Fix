@@ -12,6 +12,13 @@ TheFix
 }
 
 
+:: Story Stylesheet [stylesheet]
+.passage input[type="text"] {
+min-width: 10px;
+width: 10px;
+}
+
+
 :: Story JavaScript [script]
 let date = new Date("2021-01-31T07:00:00");
 
@@ -599,22 +606,22 @@ Macro.add('flip',
 
             if (!side){
                 if(x>=bias){
-            $(this.output).wiki("It was Heads\n");
+            $(this.output).wiki("It was Black\n");
                 state.variables.win = false
             }
             else{
-                $(this.output).wiki("It was Tails\n");
+                $(this.output).wiki("It was Red\n");
                 state.variables.win = true
             }
             }
            
             if (side){
                 if(x>=bias){
-            $(this.output).wiki("It was Tails\n");
+            $(this.output).wiki("It was Red\n");
                 state.variables.win = false
                 }
                 else{
-                $(this.output).wiki("It was Heads\n");
+                $(this.output).wiki("It was Black\n");
                 state.variables.win = true
                 }
             }
@@ -751,6 +758,10 @@ Mouse hover for Audio
         }
     });
 }());
+
+
+//disabling back button
+config.history.controls = false;
 
 
 :: Beginning Passage {"position":"799,99","size":"100,100"}
@@ -1125,7 +1136,7 @@ Soap 🧼: $soap
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Hangman {"position":"875,1075","size":"100,100"}
+:: Hangman {"position":"950,1075","size":"100,100"}
 Try to guess this $wordLength letter word! 
 
 If you win you get $120, if you lose, nothing. The day will end regardless.
@@ -1140,11 +1151,24 @@ If you win you get $120, if you lose, nothing. The day will end regardless.
     <</button>>
 
     <<if $tries is 0>>
-    <<timed 0.00001s>><<JumpLocation "Home" true>> // name new to whatever is the next passage
+    <<JumpLocation "Home" true>> // name new to whatever is the next passage
 	<<elseif $solved>>
 		<<set $money += 120>>
 		<<JumpLocation "Home" true>>
     <</if>>
+    
+    
+/*Code taken from  https://twinery.org/forum/discussion/5557/can-i-limit-the-length-of-a-textbox*/
+
+<<script>>
+postdisplay["textboxMaxlength"] = function (taskName) {
+	/* Limit textbox input elements to 1 characters. */
+	$(".macro-textbox").attr("maxlength", 1);
+
+	/* Make this a single-use task.*/
+	delete postdisplay[taskName];
+};
+<</script>>
 
 
 :: Temp Agency {"position":"775,1075","size":"100,100"}
@@ -1719,6 +1743,8 @@ Find Lotto Ticket (1%)
 <<audio confirm volume 0.3 play>>
 <</link>>
 
+<<link "Play at Roulette Wheel">><<JumpLocation "Roulette" false 10>><</link>>
+
 <<link "Downtown">><<JumpLocation "Downtown" false 30>><</link>>
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
@@ -1993,5 +2019,58 @@ The guards walk up and inform you that you will not have a court date until 16 m
 
 :: Jail Ending {"position":"2575,725","size":"100,100"}
 You walk into the county jail where you feel the pain of withdrawals creeping into your bones. After weeks of incomprehensible suffering you are offered free medical care, three extremely poor quality meals per day, and a warm place to sleep. The only downside is the likely inability to get a job for the next 10 years due to your criminal record, the constant presence of violence while incarcerated, and the dehumanisation you will endure from guards, inmates, politicians, and voters. You will also be living under constant surveillance within an electric panopticon of CCTV cameras while subject to mandatory backbreaking slavery, an intentional byproduct of the 13th amendment. This is why you probably should have saved up that $10,000.
+
+
+:: Roulette {"position":"250,1075","size":"100,100"}
+You want to play the roulette wheel? Costs 8 dollars to play
+
+<<if $money gte 8>>
+You can only bet completely on black or red.
+So, what will it be?
+
+[[choose red|tails]]
+
+[[choose black|heads]]
+<<set $win to false>>
+<<else>>
+Oh, you don't have enought money to play sorry?
+<<link "Leave the Game">><<JumpLocation "Casino" false 5>><</link>>
+<</if>>
+
+
+:: tails {"position":"200,1200","size":"100,100"}
+Red? sure *The croupier spins the wheel*
+
+<<set $headside to false>>
+
+<<flip 75>>
+
+[[continue|results]]
+
+
+:: heads {"position":"325,1200","size":"100,100"}
+Black? sure *The croupier spins the wheel*
+
+<<set $headside to true>>
+
+<<flip 70>>
+
+[[continue|results]]
+
+
+:: results {"position":"250,1325","size":"100,100"}
+<<if $win is false>>
+Oh better luck next time you lose 8$
+<<set $money -= 8>>
+<</if>>
+<<if $win is true>>
+Congratulations you won 15$
+<<set $money += 15>>
+<</if>>
+
+
+
+<<link "Play Again">><<JumpLocation "Roulette" false 10>><</link>>
+<<link "Stop Playing">><<JumpLocation "Casino" false 5>><</link>>
 
 
