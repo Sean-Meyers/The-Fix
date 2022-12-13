@@ -136,13 +136,13 @@ Macro.add('JumpLocation',
 				// if (variables().day > 28)
 				if (getMonth() != 'February')
 				{
-            		if (variables().money > 5)	//FIXME: Don't forget to change the ending condition
+            		if (variables().rich == 1)
             		{
-						$.wiki('<<goto "Good Ending">>');
+						$.wiki('<<goto "Rich Ending">>');
             		}
             		else
             		{
-						$.wiki('<<goto "Bad Ending">>');
+						$.wiki('<<goto "Good Ending">>');
             		}
           		}
 				else if (variables().hunger >= 5)
@@ -966,7 +966,7 @@ Interesting… a job could be very beneficial to you if you were to land it. Per
 <<audio storyBGM stop>>
 <<audio cym volume 0.3 play>>
 <<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
-Wow! You have completely escaped poverty due to a small loan of $1,000,000 provided by your rich uncle Warren at a fair rate of 0% interest. You use the money to buy a gorgeous three bedroom penthouse suite to look down on the people that used to pass you by. While looking down you often reflect on the fact that this was only possible because of how hard you worked and has nothing to do with your uncle owning the entire railroad industry. As such, you are always sure to castigate and dismiss anyone that refuses to pull themselves up by their bootstraps.
+Congratulations, you have managed to overcome your addiction, now you are finally free from the substance that provided a brief reprieve from your suffering...  Unfortunately your parents are poor, you are unable to pay off your debts, and your credit score is too low to rent an apartment. As such, you will be forced to stay on a kind stranger’s couch until you can save up at least $200,000 or convince someone to co-sign your lease. Unfortunately you are unable to find someone in time and are kicked out after one month. Without the warm embrace of Elixir, the streets feel even more cold and unforgiving. Thankfully, you now have the opportunity to experience the joys of being unhoused without being distracted by comfort.
 
 <img src = "img/Good.png" width = 70% />
 
@@ -1521,8 +1521,9 @@ Shall we?
 <<audio storyBGM stop>>
 <<audio cym volume 0.3 play>>
 <<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
+
 <<set $drug to 1>>
-<<set $hunger to 20>>
+
 <<if $drug is 1>>
 The first thing you notice is that it’s cold—the type that sinks into your bones and replaces all lingering warmth from staying in the same position all night. Next is the roughness of the concrete on the side of your face and on your hands as you hoist yourself up. 
 
@@ -2124,6 +2125,10 @@ You do manage to find something! A perfectly fine bunch of packaged apples prese
 
 People these days.
 
+<<mouseover>>
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
 
 :: Yell At the Person {"position":"3300,300","size":"100,100"}
 <<audio confirm volume 0.3 play>>
@@ -2140,7 +2145,11 @@ You cut your finger, swearing profusely—hopefully it doesn’t get infected.
 
 :: Leave, Try Somewhere Else {"position":"4000,300","size":"100,100"}
 <<audio confirm volume 0.3 play>>
-You nearly bump into someone while speeding away. You apologise quickly and take off, not allowing the person a moment to speak. Oh well.
+You nearly bump into someone while speeding away. You apologise quickly and take off, not allowing the person a moment to speak. Oh well. 
+
+<<mouseover>>
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
 :: Stay Silent {"position":"3400,300","size":"100,100"}
@@ -2159,6 +2168,12 @@ You nod, and they continue pulling you up to your feet. The person walks with yo
 
 Before you part ways, the person offers to put in a good word for you at their workplace. They work at Pharma, a local plant store just off of Purdue Lane. They call themself Jesse.
 
+<<set $rich to 1>>
+
+<<mouseover>>
+<<link "Head back.">><<JumpLocation "Home" true>><</link>>
+<<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
 
 :: Nah, I'll be alright {"position":"3600,300","size":"100,100"}
 <<audio confirm volume 0.3 play>>
@@ -2170,6 +2185,8 @@ The person nods and pulls you back up to your feet. They introduce themself as J
 The person walks with you to the nearest convenience store. Your conversation is short, with some awkward pauses sprinkled in between, but the person still forms a decent opinion of you in the end. They let you take a pick of whatever you want. 
 
 Before you part ways, the person offers to put in a good word for you at their workplace. They work at Pharma, a local plant store just off of Purdue Lane. They call themself Jesse. 
+
+<<set $rich to 1>>
 
 <<mouseover>>
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
@@ -2191,7 +2208,7 @@ You shake your head, and the person stands there awkwardly—wanting to help but
 <<audio storyBGM stop>>
 <<audio cym volume 0.3 play>>
 <<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
-Congratulations, you have managed to overcome your addiction, now you are truly free from the substance that provided you with a brief reprieve from the suffering...  Unfortunately your parents are poor, you are unable to pay off your debts, and your credit score is too low to rent an apartment. As such, you will be confined to staying on a kind stranger’s couch until you can save up at least $200,000 or convince someone to co-sign your lease. Unfortunately you are unable to find someone in time and are kicked out after one month. Without the warm embrace of Elixir, the streets feel even more cold and unforgiving. Thankfully, you now have the opportunity to experience the joys of being unhoused without being distracted by comfort.
+Wow! You have completely escaped poverty due to a small loan of $1,000,000 provided by your rich uncle Warren at a fair rate of 0% interest. You use the money to buy a gorgeous three bedroom penthouse suite to look down on the people that used to pass you by. While looking down you often reflect on the fact that this was only possible because of how hard you worked and has nothing to do with your uncle owning the entire railroad industry. As such, you are always sure to castigate and dismiss anyone that refuses to pull themselves up by their bootstraps.
 
 <img src = "img/Rich.png" width = 70% />
 
