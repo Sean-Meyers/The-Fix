@@ -7,7 +7,7 @@ TheFix
 	"ifid": "81C48C9B-B4D1-4C86-BEB4-47339B1C6F4E",
 	"format": "SugarCube",
 	"format-version": "2.36.1",
-	"start": "Beginning Passage",
+	"start": "Death",
 	"zoom": 1
 }
 
@@ -780,7 +780,7 @@ config.history.controls = false;
 <<set $solved to false>> /* do not change this*/
 <<set $tries to 3>> /* set tries to however many tries you want to give*/
 <<set $wordLength to 3>>
-
+<img src = "img/Beginning.png" width = 70% />
 The first thing you notice is that it’s cold—the type that sinks into your bones and replaces any lingering warmth that you might’ve retained from the tattered cloak that covers you. Next is the roughness of the concrete on the side of your face and on your hands as you hoist yourself up. 
 
 Dawn has just blinked away the remnants of sleep. If the rumbling of your stomach has anything to say about it, you can guess that you’ve been asleep for quite some time.
@@ -960,46 +960,28 @@ Interesting… a job could be very beneficial to you if you were to land it. Per
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Good Ending {"position":"1525,1875","size":"100,100"}
+:: Good Ending {"position":"2100,1000","size":"100,100"}
 <<audio confirm volume 0.3 play>>
 <<audio gameBGM stop>>
 <<audio storyBGM stop>>
 <<audio cym volume 0.3 play>>
 <<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
-Congratulations, due to your painstaking efforts you somehow managed to save up enough to feed, cloth, clean, and shelter yourself while looking for a stable job. Now that you are not so stinky and unreliable looking, employers are less reluctant to dismiss you so easily. You are finally free from a life of poor hygiene, but otherwise, the rising cost of living has made the differences appear to be aesthetic at best.
+Wow! You have completely escaped poverty due to a small loan of $1,000,000 provided by your rich uncle Warren at a fair rate of 0% interest. You use the money to buy a gorgeous three bedroom penthouse suite to look down on the people that used to pass you by. While looking down you often reflect on the fact that this was only possible because of how hard you worked and has nothing to do with your uncle owning the entire railroad industry. As such, you are always sure to castigate and dismiss anyone that refuses to pull themselves up by their bootstraps.
 
-/*Congratulations, you managed to overcome your addiction! You are finally free from the world of fantasy that kept you sane and now you have the opportunity to experience the joys of being unhoused in a modern city instead of a medieval one. Unfortunately, the differences appear to be aesthetic at best.*/
+<img src = "img/Good.png" width = 70% />
 
 Fin.
 
 
-:: Bad Ending {"position":"1775,1950","size":"100,100"}
+:: Death {"position":"2300,1000","size":"100,100"}
 <<audio confirm volume 0.3 play>>
 <<audio gameBGM stop>>
 <<audio storyBGM stop>>
 <<audio cym volume 0.3 play>>
 <<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
-You may not have the most fufilling or lavish lifestyle but...
+Oh dear, you have died before the age of 51, that means you were unable to survive for the average lifespan of an unhoused person in the United States. Better luck next time.
 
-...
-
-...
-
-...
-
-Who am I kinding your life sucks, and the cycle never ends. One of these days, you will find yourself dead in an alley or park somewhere, but society will move on just fine without you, just like it has for so many before you. Oof.
-
-
-Fin.
-
-
-:: Death {"position":"2025,1850","size":"100,100"}
-<<audio confirm volume 0.3 play>>
-<<audio gameBGM stop>>
-<<audio storyBGM stop>>
-<<audio cym volume 0.3 play>>
-<<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
-Oh dear, you have died before the age of 51, you have been unable to survive for the average lifespan of an unhoused person in the United States
+<img src = "img/Death.png" width = 70% />
 
 Fin.
 
@@ -1985,9 +1967,6 @@ You wake up in the morning feeling worse than before, as if you had nearly reach
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
 
 
-:: Take his elixer {"position":"2700,225","size":"100,100"}
-
-
 :: No, just call for help {"position":"2575,225","size":"100,100"}
 <<audio confirm volume 0.3 play>>
 <<set $drug to 0>>
@@ -2073,7 +2052,15 @@ The guards walk up and inform you that you will not have a court date until 16 m
 
 :: Jail Ending {"position":"2575,725","size":"100,100"}
 <<audio confirm volume 0.3 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio cym volume 0.3 play>>
+<<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
 You walk into the county jail where you feel the pain of withdrawals creeping into your bones. After weeks of incomprehensible suffering you are offered free medical care, three extremely poor quality meals per day, and a warm place to sleep. The only downside is the likely inability to get a job for the next 10 years due to your criminal record, the constant presence of violence while incarcerated, and the dehumanisation you will endure from guards, inmates, politicians, and voters. You will also be living under constant surveillance within an electric panopticon of CCTV cameras while subject to mandatory backbreaking slavery, an intentional byproduct of the 13th amendment. This is why you probably should have saved up that $10,000.
+
+<img src = "img/Jail.png" width = 70% />
+
+Fin.
 
 
 :: Roulette {"position":"250,1075","size":"100,100"}
@@ -2196,5 +2183,18 @@ You shake your head, and the person stands there awkwardly—wanting to help but
 <<mouseover>>
 <<link "Head back.">><<JumpLocation "Home" true>><</link>>
 <<onhover>><<audio hover volume 0.3 play>><</mouseover>>
+
+
+:: Rich Ending {"position":"2200,1000","size":"100,100"}
+<<audio confirm volume 0.3 play>>
+<<audio gameBGM stop>>
+<<audio storyBGM stop>>
+<<audio cym volume 0.3 play>>
+<<timed 0.6s>><<audio storyBGM loop volume 0.3 play>><</timed>>
+Congratulations, you have managed to overcome your addiction, now you are truly free from the substance that provided you with a brief reprieve from the suffering...  Unfortunately your parents are poor, you are unable to pay off your debts, and your credit score is too low to rent an apartment. As such, you will be confined to staying on a kind stranger’s couch until you can save up at least $200,000 or convince someone to co-sign your lease. Unfortunately you are unable to find someone in time and are kicked out after one month. Without the warm embrace of Elixir, the streets feel even more cold and unforgiving. Thankfully, you now have the opportunity to experience the joys of being unhoused without being distracted by comfort.
+
+<img src = "img/Rich.png" width = 70% />
+
+Fin.
 
 
